@@ -3,14 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Word 2007 - Edición Escritura</title>
+  <title>Word 2007 - Edición Escritura Avanzada</title>
   <style>
     :root {
-      --word-blue-header: #a3c2e0;
-      --word-blue-ribbon: #dce6f4;
+      --word-blue-header: #82a8d1;
+      --word-blue-ribbon: #c0d5f0;
       --word-blue-border: #8ba0b5;
-      --word-blue-active: #ffffff;
       --word-blue-dark: #1e395b;
+      --margin-top: 2.54cm;
+      --margin-bottom: 2.54cm;
+      --margin-left: 2.54cm;
+      --margin-right: 2.54cm;
     }
 
     * { box-sizing: border-box; }
@@ -25,7 +28,7 @@
       overflow: hidden;
     }
 
-    /* BARRA SUPERIOR AZUL WORD 2007 */
+    /* BARRA SUPERIOR */
     .header-2007 {
       background: linear-gradient(to bottom, #b5d1ea, #82a8d1);
       padding: 4px 10px;
@@ -35,8 +38,8 @@
     }
 
     .boton-office {
-      width: 32px;
-      height: 32px;
+      width: 28px;
+      height: 28px;
       background: radial-gradient(circle, #ffe380, #e68a00);
       border: 2px solid #ffffff;
       border-radius: 50%;
@@ -56,15 +59,51 @@
       font-weight: bold;
     }
 
+    /* BARRA DE PESTAÑAS (TABS) */
+    .nav-tabs {
+      background: #b2c8e3;
+      display: flex;
+      padding-left: 10px;
+      gap: 2px;
+      border-bottom: 1px solid var(--word-blue-border);
+    }
+
+    .tab-btn {
+      background: rgba(255, 255, 255, 0.4);
+      border: 1px solid var(--word-blue-border);
+      border-bottom: none;
+      padding: 4px 15px;
+      font-size: 12px;
+      color: var(--word-blue-dark);
+      border-top-left-radius: 3px;
+      border-top-right-radius: 3px;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(to bottom, #e8f1fc, #c0d5f0);
+      font-weight: bold;
+      border-bottom: 1px solid #c0d5f0;
+      margin-bottom: -1px;
+    }
+
     /* CINTA DE OPCIONES (RIBBON) */
-    .ribbon {
+    .ribbon-container {
       background: linear-gradient(to bottom, #e8f1fc, #c0d5f0);
       border-bottom: 2px solid var(--word-blue-border);
       padding: 6px 12px;
-      display: flex;
+      position: relative;
+    }
+
+    .tab-content {
+      display: none;
       gap: 15px;
       align-items: center;
       flex-wrap: wrap;
+    }
+
+    .tab-content.active {
+      display: flex;
     }
 
     .grupo-ribbon {
@@ -75,6 +114,7 @@
       padding: 4px 8px;
       border: 1px solid #b2c8e3;
       border-radius: 3px;
+      position: relative;
     }
 
     .grupo-label {
@@ -85,7 +125,7 @@
       font-weight: 600;
     }
 
-    /* CONTROLES DE TEXTO */
+    /* CONTROLES Y MENÚS */
     select, input[type="number"], button {
       font-size: 12px;
       padding: 3px 6px;
@@ -111,27 +151,60 @@
       text-align: center;
     }
 
-    /* ESPACIO DE TRABAJO Y HOJA */
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: #f0f4fc;
+      border: 1px solid var(--word-blue-border);
+      box-shadow: 2px 4px 8px rgba(0,0,0,0.2);
+      z-index: 50;
+      padding: 10px;
+      width: 200px;
+    }
+
+    .dropdown-menu button {
+      width: 100%;
+      text-align: left;
+      margin-bottom: 4px;
+    }
+
+    /* ÁREA DE TRABAJO Y HOJAS A4 SEPARADAS */
     .workspace {
       flex: 1;
       background-color: #8e9bb0;
       overflow-y: auto;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      align-items: center;
       padding: 30px 10px;
+      gap: 25px;
     }
 
-    #hoja {
+    .hoja {
       background: #ffffff;
-      width: 700px;
-      min-height: 900px;
-      padding: 60px 70px;
+      width: 21cm;
+      min-height: 29.7cm; /* Formato A4 */
+      height: 29.7cm;
+      padding-top: var(--margin-top);
+      padding-bottom: var(--margin-bottom);
+      padding-left: var(--margin-left);
+      padding-right: var(--margin-right);
       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
       outline: none;
       font-family: 'Calibri', 'Times New Roman', serif;
       font-size: 16px;
       line-height: 1.6;
       color: #000000;
+      overflow: hidden; /* Evita que el texto sobrepase la hoja visualmente */
+      word-wrap: break-word;
+    }
+
+    .hoja.horizontal {
+      width: 29.7cm;
+      height: 21cm;
+      min-height: 21cm;
     }
 
     /* BARRA DE ESTADO */
@@ -145,7 +218,7 @@
       justify-content: space-between;
     }
 
-    /* VENTANAS MODALES (DICCIONARIO Y GUÍA DE AYUDA) */
+    /* MODALES */
     .modal {
       display: none;
       position: fixed;
@@ -166,196 +239,219 @@
       padding: 20px;
       box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 2px solid #b2c8e3;
-      padding-bottom: 8px;
-      margin-bottom: 15px;
-      color: var(--word-blue-dark);
-    }
-
-    .acordeon-btn {
-      width: 100%;
-      text-align: left;
-      padding: 10px;
-      margin-top: 5px;
-      background: #dce6f4;
-      border: 1px solid #9cb8d9;
-      font-size: 13px;
-    }
-
-    .acordeon-panel {
-      display: none;
-      padding: 12px;
-      background: #ffffff;
-      border: 1px solid #9cb8d9;
-      border-top: none;
-      font-size: 13px;
-      line-height: 1.5;
-    }
   </style>
 </head>
 <body>
 
-  <!-- Encabezado Word 2007 -->
+  <!-- Encabezado Word -->
   <div class="header-2007">
     <div class="boton-office">W</div>
     <span class="titulo-doc">Documento1 - Microsoft Word</span>
   </div>
 
-  <!-- Cinta de Opciones (Ribbon) -->
-  <div class="ribbon">
-    <!-- Grupo Tipografía -->
-    <div class="grupo-ribbon">
-      <select id="fuente" onchange="cambiarFuente(this.value)">
-        <option value="Calibri">Calibri</option>
-        <option value="Times New Roman">Times New Roman</option>
-        <option value="Arial">Arial</option>
-        <option value="Georgia">Georgia</option>
-        <option value="Garamond">Garamond</option>
-        <option value="Courier New">Courier New</option>
-        <option value="Verdana">Verdana</option>
-        <option value="Book Antiqua">Book Antiqua</option>
-      </select>
-
-      <input type="number" id="inputTamano" class="num-tamano" value="16" min="1" max="200" onchange="cambiarTamanoManual(this.value)">
-
-      <button onclick="ejecutar('bold')"><b>N</b></button>
-      <button onclick="ejecutar('italic')"><i>K</i></button>
-      <button onclick="ejecutar('underline')"><u>S</u></button>
-      <span class="grupo-label">Fuente</span>
-    </div>
-
-    <!-- Grupo Herramientas para Escritores -->
-    <div class="grupo-ribbon">
-      <button onclick="abrirModal('modalDiccionario')">📖 Diccionario / Léxico</button>
-      <button onclick="abrirModal('modalAyuda')">💡 Guías de Escritura</button>
-      <span class="grupo-label">Asistencia</span>
-    </div>
+  <!-- Navegación de Pestañas -->
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="cambiarTab('tab-inicio', this)">Inicio</button>
+    <button class="tab-btn" onclick="cambiarTab('tab-disposicion', this)">Disposición</button>
   </div>
 
-  <!-- Área de Trabajo -->
-  <div class="workspace">
-    <div id="hoja" contenteditable="true" spellcheck="true" oninput="actualizarContador()">
-      Comienza a escribir tu obra o historia aquí...
+  <!-- Cinta de Opciones (Ribbon) -->
+  <div class="ribbon-container">
+    
+    <!-- PESTAÑA INICIO -->
+    <div id="tab-inicio" class="tab-content active">
+      <div class="grupo-ribbon">
+        <select id="fuente" onchange="cambiarFuente(this.value)">
+          <option value="Calibri">Calibri</option>
+          <option value="Times New Roman">Times New Roman</option>
+          <option value="Arial">Arial</option>
+          <option value="Georgia">Georgia</option>
+          <option value="Courier New">Courier New</option>
+        </select>
+        <input type="number" id="inputTamano" class="num-tamano" value="16" min="1" max="200" onchange="cambiarTamanoManual(this.value)">
+        <button onclick="ejecutar('bold')"><b>N</b></button>
+        <button onclick="ejecutar('italic')"><i>K</i></button>
+        <button onclick="ejecutar('underline')"><u>S</u></button>
+        <span class="grupo-label">Fuente</span>
+      </div>
+
+      <div class="grupo-ribbon">
+        <button onclick="abrirModal('modalDiccionario')">📖 Diccionario</button>
+        <button onclick="abrirModal('modalAyuda')">💡 Guías Escritura</button>
+        <span class="grupo-label">Asistencia</span>
+      </div>
+    </div>
+
+    <!-- PESTAÑA DISPOSICIÓN -->
+    <div id="tab-disposicion" class="tab-content">
+      
+      <!-- Márgenes -->
+      <div class="grupo-ribbon">
+        <button onclick="toggleMenu('menuMargenes')">📐 Márgenes de página ▾</button>
+        <div id="menuMargenes" class="dropdown-menu">
+          <button onclick="aplicarMargen(2.54, 2.54, 2.54, 2.54)">Normales (2.54 cm)</button>
+          <button onclick="aplicarMargen(1.27, 1.27, 1.27, 1.27)">Estrechos (1.27 cm)</button>
+          <button onclick="aplicarMargen(2.54, 2.54, 5.08, 5.08)">Amplios (5.08 cm)</button>
+          <hr>
+          <div style="font-size:11px; margin-bottom:5px;"><b>Personalizado (cm):</b></div>
+          <label style="font-size:10px;">Sup: <input type="number" id="mSup" value="2.54" step="0.1" style="width:45px;"></label>
+          <label style="font-size:10px;">Inf: <input type="number" id="mInf" value="2.54" step="0.1" style="width:45px;"></label><br>
+          <label style="font-size:10px;">Izq: <input type="number" id="mIzq" value="2.54" step="0.1" style="width:45px;"></label>
+          <label style="font-size:10px;">Der: <input type="number" id="mDer" value="2.54" step="0.1" style="width:45px;"></label>
+          <button onclick="aplicarMargenesPersonalizados()" style="margin-top:5px; width:100%;">Aplicar</button>
+        </div>
+        <span class="grupo-label">Márgenes</span>
+      </div>
+
+      <!-- Orientación -->
+      <div class="grupo-ribbon">
+        <button onclick="cambiarOrientacion('vertical')">📄 Vertical</button>
+        <button onclick="cambiarOrientacion('horizontal')">📜 Horizontal</button>
+        <span class="grupo-label">Orientación</span>
+      </div>
+
+      <!-- Saltos -->
+      <div class="grupo-ribbon">
+        <button onclick="crearNuevaHoja()">📑 Salto de página</button>
+        <span class="grupo-label">Páginas</span>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ÁREA DE HOJAS -->
+  <div class="workspace" id="workspace">
+    <div class="hoja" contenteditable="true" spellcheck="true" oninput="gestionarHojas(this)">
+      Comienza a escribir tu texto aquí...
     </div>
   </div>
 
   <!-- Barra de Estado -->
   <div class="status-bar">
-    <span id="contadorPalabras">Palabras: 7</span>
-    <span>Modo Escritura Libre | Corrector Activado</span>
+    <span id="infoPaginas">Página 1 de 1</span>
+    <span id="contadorPalabras">Palabras: 0</span>
   </div>
 
-  <!-- MODAL 1: DICCIONARIO / LÉXICO -->
+  <!-- MODAL DICCIONARIO -->
   <div id="modalDiccionario" class="modal">
     <div class="modal-contenido">
-      <div class="modal-header">
-        <h3>📖 Mejora tu Léxico / Sinónimos</h3>
-        <button onclick="cerrarModal('modalDiccionario')">X</button>
-      </div>
-      <p>Escribe una palabra para buscar alternativas y enriquecer tu texto:</p>
-      <input type="text" id="palabraBuscar" placeholder="Ejemplo: caminar, dijo, grande..." style="width:70%; padding:6px;">
+      <h3>📖 Diccionario / Léxico</h3>
+      <input type="text" id="palabraBuscar" placeholder="Palabra..." style="width:70%;">
       <button onclick="buscarSinonimos()">Buscar</button>
-      
-      <div id="resultadosDiccionario" style="margin-top: 15px; font-size: 14px;"></div>
+      <div id="resultadosDiccionario" style="margin-top: 10px;"></div>
+      <br><button onclick="cerrarModal('modalDiccionario')">Cerrar</button>
     </div>
   </div>
 
-  <!-- MODAL 2: GUÍAS DE ESCRITURA -->
+  <!-- MODAL AYUDA -->
   <div id="modalAyuda" class="modal">
     <div class="modal-contenido">
-      <div class="modal-header">
-        <h3>💡 Guías y Formatos de Escritura</h3>
-        <button onclick="cerrarModal('modalAyuda')">X</button>
-      </div>
-      
-      <button class="acordeon-btn" onclick="toggleAcordeon('guia1')">💬 ¿Cómo dar formato a los diálogos?</button>
-      <div id="guia1" class="acordeon-panel">
-        <p><strong>Uso de la raya (—):</strong> En español se usa la raya (Alt + 0151) sin espacio pegada a la primera palabra del diálogo.</p>
-        <p><em>Ejemplo:</em> —No estoy de acuerdo con tu decisión —dijo Carlos con frialdad.</p>
-        <p><strong>Verbos de dicción:</strong> Si el inciso empieza con un verbo de habla (dijo, respondió, exclamó), va en minúscula.</p>
-      </div>
-
-      <button class="acordeon-btn" onclick="toggleAcordeon('guia2')">🎬 Estructura y ritmo de las escenas</button>
-      <div id="guia2" class="acordeon-panel">
-        <p><strong>Párrafos cortos:</strong> Aceleran la acción y transmiten tensión o rapidez.</p>
-        <p><strong>Párrafos largos:</strong> Ideales para momentos introspectivos, descripciones detalladas o calma.</p>
-      </div>
-
-      <button class="acordeon-btn" onclick="toggleAcordeon('guia3')">🎨 Evitar palabras comodín ("Dijo", "Había")</button>
-      <div id="guia3" class="acordeon-panel">
-        <p>Reemplaza "dijo" por verbos con más carga emocional: <em>murmuró, espetó, replicó, sostuvo, inquirió, vociferó</em>.</p>
-      </div>
+      <h3>💡 Guías de Escritura</h3>
+      <p><strong>Diálogos:</strong> Usa la raya (—) pegada al texto.</p>
+      <button onclick="cerrarModal('modalAyuda')">Cerrar</button>
     </div>
   </div>
 
   <script>
-    // Comandos de edición
-    function ejecutar(comando, valor = null) {
-      document.execCommand(comando, false, valor);
+    // Gestión de Pestañas
+    function cambiarTab(idTab, btn) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(idTab).classList.add('active');
+      btn.classList.add('active');
     }
 
-    function cambiarFuente(fuente) {
-      document.execCommand('fontName', false, fuente);
+    // Menús desplegables
+    function toggleMenu(id) {
+      const menu = document.getElementById(id);
+      menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
     }
 
-    // Aplicar tamaño exacto en Puntos/Píxeles al texto seleccionado
-    function cambiarTamanoManual(tamano) {
-      const seleccion = window.getSelection();
-      if (!seleccion.rangeCount || seleccion.isCollapsed) return;
-
-      const rango = seleccion.getRangeAt(0);
+    // Comandos de formato
+    function ejecutar(com, val = null) { document.execCommand(com, false, val); }
+    function cambiarFuente(f) { document.execCommand('fontName', false, f); }
+    
+    function cambiarTamanoManual(t) {
+      const sel = window.getSelection();
+      if (!sel.rangeCount || sel.isCollapsed) return;
+      const range = sel.getRangeAt(0);
       const span = document.createElement('span');
-      span.style.fontSize = tamano + 'pt';
-      rango.surroundContents(span);
+      span.style.fontSize = t + 'pt';
+      range.surroundContents(span);
     }
 
-    // Contador de palabras
+    // Márgenes
+    function aplicarMargen(top, bottom, left, right) {
+      document.documentElement.style.setProperty('--margin-top', top + 'cm');
+      document.documentElement.style.setProperty('--margin-bottom', bottom + 'cm');
+      document.documentElement.style.setProperty('--margin-left', left + 'cm');
+      document.documentElement.style.setProperty('--margin-right', right + 'cm');
+      toggleMenu('menuMargenes');
+    }
+
+    function aplicarMargenesPersonalizados() {
+      const top = document.getElementById('mSup').value;
+      const bottom = document.getElementById('mInf').value;
+      const left = document.getElementById('mIzq').value;
+      const right = document.getElementById('mDer').value;
+      aplicarMargen(top, bottom, left, right);
+    }
+
+    // Orientación
+    function cambiarOrientacion(tipo) {
+      const hojas = document.querySelectorAll('.hoja');
+      hojas.forEach(h => {
+        if (tipo === 'horizontal') h.classList.add('horizontal');
+        else h.classList.remove('horizontal');
+      });
+    }
+
+    // Generación Automática de Hojas (Multi-página)
+    function gestionarHojas(hojaActual) {
+      actualizarContador();
+
+      // Si el contenido supera la altura visible de la hoja actual, crea otra hoja
+      if (hojaActual.scrollHeight > hojaActual.clientHeight) {
+        let siguienteHoja = hojaActual.nextElementSibling;
+        if (!siguienteHoja || !siguienteHoja.classList.contains('hoja')) {
+          siguienteHoja = crearNuevaHoja();
+        }
+      }
+      actualizarInfoPaginas();
+    }
+
+    function crearNuevaHoja() {
+      const ws = document.getElementById('workspace');
+      const nueva = document.createElement('div');
+      nueva.className = 'hoja';
+      if (document.querySelector('.hoja').classList.contains('horizontal')) {
+        nueva.classList.add('horizontal');
+      }
+      nueva.contentEditable = "true";
+      nueva.spellcheck = true;
+      nueva.oninput = function() { gestionarHojas(this); };
+      ws.appendChild(nueva);
+      nueva.focus();
+      actualizarInfoPaginas();
+      return nueva;
+    }
+
+    function actualizarInfoPaginas() {
+      const total = document.querySelectorAll('.hoja').length;
+      document.getElementById('infoPaginas').innerText = `Páginas: ${total}`;
+    }
+
     function actualizarContador() {
-      const texto = document.getElementById('hoja').innerText.trim();
-      const palabras = texto ? texto.split(/\s+/).length : 0;
+      let textoTotal = "";
+      document.querySelectorAll('.hoja').forEach(h => textoTotal += " " + h.innerText);
+      const palabras = textoTotal.trim() ? textoTotal.trim().split(/\s+/).length : 0;
       document.getElementById('contadorPalabras').innerText = `Palabras: ${palabras}`;
     }
 
     // Modales
     function abrirModal(id) { document.getElementById(id).style.display = 'flex'; }
     function cerrarModal(id) { document.getElementById(id).style.display = 'none'; }
-
-    // Acordeón de ayuda
-    function toggleAcordeon(id) {
-      const panel = document.getElementById(id);
-      panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
-    }
-
-    // Búsqueda simple de sinónimos con API gratuita
-    async function buscarSinonimos() {
-      const palabra = document.getElementById('palabraBuscar').value.trim();
-      const divRes = document.getElementById('resultadosDiccionario');
-      if (!palabra) return;
-
-      divRes.innerHTML = "Buscando alternativas...";
-      try {
-        const res = await fetch(`https://api.datamuse.com/words?rel_syn=${palabra}&lang=es`);
-        const datos = await res.json();
-
-        if (datos.length === 0) {
-          divRes.innerHTML = "<p>No se encontraron sinónimos directos. Intenta con otra palabra.</p>";
-        } else {
-          let html = "<p><strong>Sinónimos / Palabras relacionadas:</strong></p><ul>";
-          datos.slice(0, 10).forEach(item => {
-            html += `<li>${item.word}</li>`;
-          });
-          html += "</ul>";
-          divRes.innerHTML = html;
-        }
-      } catch (err) {
-        divRes.innerHTML = "<p>Error al conectar con el servidor de diccionario.</p>";
-      }
-    }
   </script>
 </body>
 </html>
