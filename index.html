@@ -126,7 +126,7 @@
     }
 
     /* CONTROLES Y MENÚS */
-    select, input[type="text"], input[type="number"], button {
+    select, input[type="number"], input[type="text"], button {
       font-size: 12px;
       padding: 3px 6px;
       border: 1px solid #7a96df;
@@ -185,7 +185,7 @@
     .hoja {
       background: #ffffff;
       width: 21cm;
-      min-height: 29.7cm; 
+      min-height: 29.7cm;
       height: 29.7cm;
       padding-top: var(--margin-top);
       padding-bottom: var(--margin-bottom);
@@ -197,7 +197,7 @@
       font-size: 16px;
       line-height: 1.6;
       color: #000000;
-      overflow: hidden; 
+      overflow: hidden;
       word-wrap: break-word;
     }
 
@@ -218,7 +218,7 @@
       justify-content: space-between;
     }
 
-    /* MODALES Y ACORDEONES */
+    /* MODALES */
     .modal {
       display: none;
       position: fixed;
@@ -233,14 +233,26 @@
       background: #f0f4fc;
       border: 2px solid #5a7da8;
       border-radius: 6px;
-      width: 650px;
+      width: 700px;
       max-height: 85vh;
       overflow-y: auto;
       padding: 20px;
       box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-      color: var(--word-blue-dark);
+      font-family: 'Segoe UI', sans-serif;
     }
 
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #b2c8e3;
+      padding-bottom: 10px;
+      margin-bottom: 15px;
+    }
+
+    .modal-header h3 { margin: 0; color: var(--word-blue-dark); }
+
+    /* ACORDEÓN PARA GUÍAS */
     .acordeon-btn {
       width: 100%;
       text-align: left;
@@ -249,36 +261,31 @@
       background: #dce6f4;
       border: 1px solid #9cb8d9;
       font-size: 14px;
-      border-radius: 4px;
+      font-weight: bold;
     }
-
     .acordeon-panel {
       display: none;
       padding: 15px;
       background: #ffffff;
       border: 1px solid #9cb8d9;
       border-top: none;
-      font-size: 14px;
-      line-height: 1.6;
-      border-bottom-left-radius: 4px;
-      border-bottom-right-radius: 4px;
+      font-size: 13px;
+      line-height: 1.5;
     }
-
-    #resultadosDiccionario {
-      margin-top: 15px; 
-      background: white; 
-      padding: 15px; 
-      border: 1px solid #9cb8d9; 
-      border-radius: 4px; 
-      max-height: 300px; 
-      overflow-y: auto;
+    .diccionario-box {
+      background: #ffffff;
+      padding: 15px;
+      border: 1px solid #b2c8e3;
+      margin-top: 10px;
       font-size: 13px;
     }
-    
-    .dic-seccion { margin-bottom: 10px; padding-bottom: 5px; border-bottom: 1px dashed #ccc; }
-    .dic-etiqueta { font-weight: bold; color: #1e395b; }
-    .dic-tags span { background: #e3edf9; padding: 2px 6px; border-radius: 10px; margin-right: 5px; display: inline-block; font-size: 11px; }
-
+    .etiqueta-dic {
+      font-weight: bold;
+      color: #1e395b;
+      background: #e8f1fc;
+      padding: 2px 5px;
+      border-radius: 3px;
+    }
   </style>
 </head>
 <body>
@@ -297,7 +304,6 @@
 
   <!-- Cinta de Opciones (Ribbon) -->
   <div class="ribbon-container">
-    
     <!-- PESTAÑA INICIO -->
     <div id="tab-inicio" class="tab-content active">
       <div class="grupo-ribbon">
@@ -309,23 +315,23 @@
           <option value="Courier New">Courier New</option>
         </select>
         <input type="number" id="inputTamano" class="num-tamano" value="16" min="1" max="200" onchange="cambiarTamanoManual(this.value)">
-        <button onclick="ejecutar('bold')" title="Negrita"><b>N</b></button>
-        <button onclick="ejecutar('italic')" title="Cursiva"><i>K</i></button>
-        <button onclick="ejecutar('underline')" title="Subrayado"><u>S</u></button>
+        <button onclick="ejecutar('bold')"><b>N</b></button>
+        <button onclick="ejecutar('italic')"><i>K</i></button>
+        <button onclick="ejecutar('underline')"><u>S</u></button>
         <span class="grupo-label">Fuente</span>
       </div>
 
       <div class="grupo-ribbon">
         <button onclick="abrirModal('modalDiccionario')">📖 Diccionario Completo</button>
-        <button onclick="abrirModal('modalAyuda')">💡 Maestro de Escritura</button>
-        <span class="grupo-label">Asistencia Avanzada</span>
+        <button onclick="abrirModal('modalAyuda')">💡 Guías de Escritura</button>
+        <span class="grupo-label">Asistencia</span>
       </div>
     </div>
 
     <!-- PESTAÑA DISPOSICIÓN -->
     <div id="tab-disposicion" class="tab-content">
       <div class="grupo-ribbon">
-        <button onclick="toggleMenu('menuMargenes')">📐 Márgenes de página ▾</button>
+        <button onclick="toggleMenu('menuMargenes')">📐 Márgenes ▾</button>
         <div id="menuMargenes" class="dropdown-menu">
           <button onclick="aplicarMargen(2.54, 2.54, 2.54, 2.54)">Normales (2.54 cm)</button>
           <button onclick="aplicarMargen(1.27, 1.27, 1.27, 1.27)">Estrechos (1.27 cm)</button>
@@ -340,13 +346,11 @@
         </div>
         <span class="grupo-label">Márgenes</span>
       </div>
-
       <div class="grupo-ribbon">
         <button onclick="cambiarOrientacion('vertical')">📄 Vertical</button>
         <button onclick="cambiarOrientacion('horizontal')">📜 Horizontal</button>
         <span class="grupo-label">Orientación</span>
       </div>
-
       <div class="grupo-ribbon">
         <button onclick="crearNuevaHoja()">📑 Salto de página</button>
         <span class="grupo-label">Páginas</span>
@@ -356,10 +360,12 @@
 
   <!-- ÁREA DE HOJAS -->
   <div class="workspace" id="workspace">
-    <div class="hoja" contenteditable="true" spellcheck="true" oninput="gestionarHojas(this)"></div>
+    <div class="hoja" contenteditable="true" spellcheck="true" oninput="gestionarHojas(this)">
+      Comienza a escribir tu texto aquí...
+    </div>
   </div>
 
-  <!-- BARRA DE ESTADO -->
+  <!-- Barra de Estado -->
   <div class="status-bar">
     <span id="infoPaginas">Página 1 de 1</span>
     <span id="contadorPalabras">Palabras: 0</span>
@@ -368,74 +374,73 @@
   <!-- MODAL DICCIONARIO AVANZADO -->
   <div id="modalDiccionario" class="modal">
     <div class="modal-contenido">
-      <h3>📖 Diccionario Completo (Significados, Sinónimos y Antónimos)</h3>
-      <p>Escribe una palabra en singular o en infinitivo (ej: "molestar", "feliz", "correr"):</p>
-      <div style="display:flex; gap:10px;">
-        <input type="text" id="palabraBuscar" placeholder="Ej. molestar" style="flex:1; padding:6px;">
-        <button onclick="buscarDiccionario()">Buscar</button>
+      <div class="modal-header">
+        <h3>📖 Diccionario (Significados, Sinónimos y Antónimos)</h3>
+        <button onclick="cerrarModal('modalDiccionario')" style="padding: 2px 8px; color: red;">X</button>
       </div>
-      <div id="resultadosDiccionario">Esperando búsqueda...</div>
-      <br>
-      <div style="text-align:right;">
-        <button onclick="cerrarModal('modalDiccionario')">Cerrar Diccionario</button>
+      <p>Escribe una palabra válida en español:</p>
+      <input type="text" id="palabraBuscar" placeholder="Ej: molestar, oscuro, caminar..." style="width:70%; font-size:14px; padding:4px;">
+      <button onclick="buscarPalabra()">Buscar</button>
+      
+      <div id="resultadosDiccionario" class="diccionario-box">
+        <em>Los resultados aparecerán aquí...</em>
       </div>
     </div>
   </div>
 
-  <!-- MODAL AYUDA (MAESTRO DE ESCRITURA) -->
+  <!-- MODAL AYUDA ESCRITURA -->
   <div id="modalAyuda" class="modal">
     <div class="modal-contenido">
-      <div style="display:flex; justify-content:space-between; align-items:center;">
-        <h3>💡 Maestro de Escritura</h3>
-        <button onclick="cerrarModal('modalAyuda')">X</button>
+      <div class="modal-header">
+        <h3>💡 Guía Maestra para Escritores</h3>
+        <button onclick="cerrarModal('modalAyuda')" style="padding: 2px 8px; color: red;">X</button>
       </div>
-      <p>Haz clic en las categorías para desplegar consejos profesionales:</p>
-
-      <!-- Regla 1 -->
-      <button class="acordeon-btn" onclick="toggleAcordeon('guia-longitud')">📏 1. La longitud de los Diálogos</button>
-      <div id="guia-longitud" class="acordeon-panel">
-        <p><strong>Diálogos cortos (Ping-Pong):</strong> Son frases rápidas de una línea. <em>Uso:</em> Ideales para discusiones, interrogatorios, escenas de acción o momentos de alta tensión. Aceleran el ritmo de lectura de forma drástica.</p>
-        <p><strong>Diálogos largos:</strong> Párrafos de 3 a 5 líneas. <em>Uso:</em> Sirven para que un personaje explique un plan, cuente una anécdota o revele sus sentimientos. Mantienen un ritmo intermedio.</p>
-        <p><strong>Diálogos larguísimos (Monólogos):</strong> <em>Peligro:</em> Pueden aburrir al lector y parecer discursos teatrales poco realistas. <em>Solución:</em> Si un personaje tiene que hablar mucho, interrúmpelo con acciones físicas (ej: tomar un sorbo de café, mirar por la ventana) o con reacciones del otro personaje.</p>
-      </div>
-
-      <!-- Regla 2 -->
-      <button class="acordeon-btn" onclick="toggleAcordeon('guia-naturalidad')">🗣️ 2. Cómo hacer diálogos que suenen naturales</button>
-      <div id="guia-naturalidad" class="acordeon-panel">
+      
+      <button class="acordeon-btn" onclick="toggleAcordeon('guiaDialogosFormato')">💬 1. Reglas de Formato para Diálogos (Raya)</button>
+      <div id="guiaDialogosFormato" class="acordeon-panel">
+        <p>En español no se usan las comillas inglesas (" ") para los diálogos en novelas, se usa la <strong>raya (—)</strong>, que puedes escribir con Alt + 0151.</p>
         <ul>
-          <li><strong>La gente no habla perfecto:</strong> Usa contracciones, pausas, muletillas moderadas o frases a medias.</li>
-          <li><strong>Lee en voz alta:</strong> El mejor truco. Si al leer tu diálogo en voz alta te quedas sin aire o suena como un robot leyendo una enciclopedia, debes reescribirlo.</li>
-          <li><strong>El subtexto (Lo no dicho):</strong> En la vida real, las personas rara vez dicen exactamente lo que sienten. Si alguien está enojado, en lugar de decir "Estoy muy enfadado contigo", hará comentarios sarcásticos o responderá con monosílabos.</li>
-          <li><strong>Evita el "Síndrome de la sirvienta":</strong> No uses diálogos para explicar cosas al lector que los personajes ya saben (ej: <em>"Como sabes, hermano mío, nuestro padre murió hace diez años en aquel accidente..."</em>).</li>
+          <li><strong>Verbos de dicción (dijo, respondió, preguntó, exclamó):</strong> Si el narrador interrumpe con uno de estos verbos, la raya va pegada al verbo y empieza en minúscula (incluso si el diálogo termina en signo de exclamación o interrogación).<br>
+          <em>Ejemplo:</em> —¡No pienso ir! —gritó María enfurecida.</li>
+          <li><strong>Verbos de acción (sonrió, caminó, miró):</strong> Si el narrador describe una acción que no es de habla, el inciso va con mayúscula y separado por un punto.<br>
+          <em>Ejemplo:</em> —Te estuve esperando. —Juan se cruzó de brazos y suspiró.</li>
         </ul>
       </div>
 
-      <!-- Regla 3 -->
-      <button class="acordeon-btn" onclick="toggleAcordeon('guia-formato')">✏️ 3. Formato y puntuación del diálogo</button>
-      <div id="guia-formato" class="acordeon-panel">
-        <p>En español literario, usamos la <strong>Raya de diálogo (—)</strong> (Puedes sacarla con <code>Alt + 0151</code> en teclado numérico o copiándola).</p>
-        <p><strong>Regla de los incisos (cuando el narrador interrumpe):</strong></p>
-        <ul>
-          <li><em>Verbos de habla (dijo, preguntó, exclamó):</em> Comienzan en minúscula y se pegan a la raya.<br>
-          Ej: —No quiero ir —dijo María enfadada.</li>
-          <li><em>Verbos de acción (sonrió, caminó, suspiró):</em> Comienzan en mayúscula y cierran con punto el diálogo anterior.<br>
-          Ej: —No quiero ir. —María se cruzó de brazos mirando a la pared.</li>
-        </ul>
+      <button class="acordeon-btn" onclick="toggleAcordeon('guiaLongitud')">⏱️ 2. Longitud de los Diálogos: Cortos, Largos y Larguísimos</button>
+      <div id="guiaLongitud" class="acordeon-panel">
+        <p><strong class="etiqueta-dic">Diálogos Cortos:</strong> Generan tensión, ritmo rápido y acción. Útiles para discusiones acaloradas o peligro.<br>
+        <em>Ejemplo:</em><br>
+        —¡Corre!<br>
+        —No puedo...<br>
+        —¡Te van a atrapar, levántate!</p>
+        
+        <p><strong class="etiqueta-dic">Diálogos Largos (1 párrafo):</strong> Útiles para explicaciones, confesiones o reflexiones. Frenan el ritmo de la lectura.<br>
+        <em>Ejemplo:</em><br>
+        —La verdad es que nunca quise lastimarte —confesó él, mirando al suelo—. Pensé que si me alejaba sin decir nada, sería más fácil para los dos olvidar todo lo que pasó aquel verano, pero me equivoqué.</p>
+
+        <p><strong class="etiqueta-dic">Diálogos Larguísimos (Múltiples párrafos del mismo personaje):</strong> Pueden aburrir si no se manejan bien. Si un personaje habla por varios párrafos, a partir del segundo párrafo se debe poner <strong>comillas latinas de cierre (»)</strong> al inicio para indicar que sigue hablando el mismo personaje.<br>
+        <em>Ejemplo:</em><br>
+        —La historia comenzó hace mucho tiempo —dijo el abuelo—. Específicamente en 1980, cuando el invierno fue tan duro que los ríos se congelaron.<br>
+        »Nadie podía salir de sus casas. La comida escaseaba y el miedo se apoderaba de nosotros. Fue entonces cuando vimos esa extraña luz en el cielo.</p>
       </div>
 
-      <!-- Regla 4 -->
-      <button class="acordeon-btn" onclick="toggleAcordeon('guia-acciones')">🎭 4. Mostrar vs Contar (Show, Don't Tell)</button>
-      <div id="guia-acciones" class="acordeon-panel">
-        <p><strong>Contar (Aburrido):</strong> Juan estaba muy nervioso por la entrevista.</p>
-        <p><strong>Mostrar (Inmersivo):</strong> A Juan le temblaba la rodilla debajo de la mesa mientras despedazaba una servilleta de papel con las manos sudorosas.</p>
-        <p><em>Consejo:</em> En lugar de darle una etiqueta emocional al lector, dale las pistas visuales, auditivas y físicas para que el lector deduzca la emoción por sí mismo.</p>
+      <button class="acordeon-btn" onclick="toggleAcordeon('guiaNaturales')">🎭 3. Cómo hacer que los diálogos suenen naturales</button>
+      <div id="guiaNaturales" class="acordeon-panel">
+        <ul>
+          <li><strong>No uses sus nombres constantemente:</strong> En la vida real rara vez decimos el nombre de la persona con la que hablamos. (Malo: <em>—Hola, Pedro. —¿Cómo estás, María?</em> / Bueno: <em>—Hola. —¿Qué tal?</em>)</li>
+          <li><strong>Deja que se interrumpan:</strong> Usa puntos suspensivos para reflejar dudas o cortes.<br>
+          <em>Ejemplo:</em> —Yo no quería que él...<br>—¡No mientas! Te vi hacerlo.</li>
+          <li><strong>Evita que suenen como enciclopedias:</strong> La gente usa muletillas, contracciones o deja frases sin terminar. No los hagas hablar como si estuvieran leyendo un libro de texto.</li>
+          <li><strong>La regla de oro: Lee tus diálogos en voz alta.</strong> Si te quedas sin aire o suenas como un robot, debes reescribirlo.</li>
+        </ul>
       </div>
 
     </div>
   </div>
 
   <script>
-    // --- NAVEGACIÓN Y MENÚS ---
+    // Gestión de Pestañas
     function cambiarTab(idTab, btn) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -448,10 +453,9 @@
       menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
     }
 
-    // --- COMANDOS DE TEXTO ---
+    // Comandos de formato
     function ejecutar(com, val = null) { document.execCommand(com, false, val); }
     function cambiarFuente(f) { document.execCommand('fontName', false, f); }
-    
     function cambiarTamanoManual(t) {
       const sel = window.getSelection();
       if (!sel.rangeCount || sel.isCollapsed) return;
@@ -461,7 +465,7 @@
       range.surroundContents(span);
     }
 
-    // --- MÁRGENES Y ORIENTACIÓN ---
+    // Márgenes y Orientación
     function aplicarMargen(top, bottom, left, right) {
       document.documentElement.style.setProperty('--margin-top', top + 'cm');
       document.documentElement.style.setProperty('--margin-bottom', bottom + 'cm');
@@ -469,7 +473,6 @@
       document.documentElement.style.setProperty('--margin-right', right + 'cm');
       toggleMenu('menuMargenes');
     }
-
     function aplicarMargenesPersonalizados() {
       aplicarMargen(
         document.getElementById('mSup').value,
@@ -478,7 +481,6 @@
         document.getElementById('mDer').value
       );
     }
-
     function cambiarOrientacion(tipo) {
       document.querySelectorAll('.hoja').forEach(h => {
         if (tipo === 'horizontal') h.classList.add('horizontal');
@@ -486,12 +488,12 @@
       });
     }
 
-    // --- GESTIÓN DE HOJAS MULTIPÁGINA ---
+    // Hojas Automáticas
     function gestionarHojas(hojaActual) {
       actualizarContador();
       if (hojaActual.scrollHeight > hojaActual.clientHeight) {
-        let siguienteHoja = hojaActual.nextElementSibling;
-        if (!siguienteHoja || !siguienteHoja.classList.contains('hoja')) {
+        let sig = hojaActual.nextElementSibling;
+        if (!sig || !sig.classList.contains('hoja')) {
           crearNuevaHoja();
         }
       }
@@ -502,9 +504,7 @@
       const ws = document.getElementById('workspace');
       const nueva = document.createElement('div');
       nueva.className = 'hoja';
-      if (document.querySelector('.hoja').classList.contains('horizontal')) {
-        nueva.classList.add('horizontal');
-      }
+      if (document.querySelector('.hoja').classList.contains('horizontal')) nueva.classList.add('horizontal');
       nueva.contentEditable = "true";
       nueva.spellcheck = true;
       nueva.oninput = function() { gestionarHojas(this); };
@@ -514,90 +514,75 @@
     }
 
     function actualizarInfoPaginas() {
-      const total = document.querySelectorAll('.hoja').length;
-      document.getElementById('infoPaginas').innerText = `Páginas: ${total}`;
+      document.getElementById('infoPaginas').innerText = `Páginas: ${document.querySelectorAll('.hoja').length}`;
     }
 
     function actualizarContador() {
-      let textoTotal = "";
-      document.querySelectorAll('.hoja').forEach(h => textoTotal += " " + h.innerText);
-      const palabras = textoTotal.trim() ? textoTotal.trim().split(/\s+/).length : 0;
-      document.getElementById('contadorPalabras').innerText = `Palabras: ${palabras}`;
+      let texto = "";
+      document.querySelectorAll('.hoja').forEach(h => texto += " " + h.innerText);
+      const arr = texto.trim().match(/\S+/g);
+      document.getElementById('contadorPalabras').innerText = `Palabras: ${arr ? arr.length : 0}`;
     }
 
-    // --- MODALES Y ACORDEONES ---
+    // Modales y Acordeones
     function abrirModal(id) { document.getElementById(id).style.display = 'flex'; }
     function cerrarModal(id) { document.getElementById(id).style.display = 'none'; }
-
     function toggleAcordeon(id) {
       const panel = document.getElementById(id);
       panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
     }
 
-    // --- DICCIONARIO AVANZADO (API) ---
-    async function buscarDiccionario() {
-      const palabraInput = document.getElementById('palabraBuscar').value.trim().toLowerCase();
+    // NUEVO DICCIONARIO: Definiciones, Sinónimos y Antónimos
+    async function buscarPalabra() {
+      const palabra = document.getElementById('palabraBuscar').value.trim().toLowerCase();
       const divRes = document.getElementById('resultadosDiccionario');
-      
-      if (!palabraInput) {
-        divRes.innerHTML = "<span style='color:red;'>Por favor, escribe una palabra.</span>";
-        return;
-      }
+      if (!palabra) return;
 
-      divRes.innerHTML = "Buscando en la base de datos... ⏳";
+      divRes.innerHTML = "<p>Buscando en el diccionario...</p>";
       
       try {
-        // Usamos la Free Dictionary API para buscar definiciones, sinónimos y antónimos en español
-        const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/es/${palabraInput}`);
+        // Usando Free Dictionary API (Soporta español)
+        const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/es/${palabra}`);
         
         if (!res.ok) {
-          throw new Error("Palabra no encontrada");
+          divRes.innerHTML = `<p style="color:red;">No se encontró la palabra <b>"${palabra}"</b> en este diccionario gratuito. Verifica la ortografía, que esté en singular o en su verbo en infinitivo.</p>`;
+          return;
         }
-        
+
         const datos = await res.json();
-        const entrada = datos[0];
+        const info = datos[0]; // Tomamos el primer resultado
         
-        let html = `<h4 style="margin-top:0; font-size:18px; color:var(--word-blue-dark); text-transform:capitalize;">📘 ${entrada.word}</h4>`;
-        
-        // Recorrer los significados encontrados (sustantivo, verbo, adjetivo, etc.)
-        entrada.meanings.forEach(significado => {
-          html += `<div class="dic-seccion">`;
-          html += `<div class="dic-etiqueta">Tipo: ${significado.partOfSpeech}</div>`;
+        let html = `<h2 style="margin-top:0; color:var(--word-blue-dark); text-transform:capitalize;">${info.word}</h2>`;
+
+        info.meanings.forEach(significado => {
+          html += `<div style="margin-bottom:15px;">`;
+          html += `<span class="etiqueta-dic">${significado.partOfSpeech}</span>`;
           
           // Definiciones
-          html += `<ul>`;
-          significado.definitions.slice(0, 3).forEach(def => {
-            html += `<li>${def.definition}</li>`;
-          });
-          html += `</ul>`;
-          
+          if (significado.definitions.length > 0) {
+            html += `<ul style="margin-top:5px; margin-bottom:5px;">`;
+            significado.definitions.slice(0, 4).forEach(def => {
+              html += `<li>${def.definition}</li>`;
+            });
+            html += `</ul>`;
+          }
+
           // Sinónimos
           if (significado.synonyms && significado.synonyms.length > 0) {
-            html += `<div class="dic-tags"><strong>Sinónimos:</strong> `;
-            significado.synonyms.slice(0, 8).forEach(syn => { html += `<span>${syn}</span>`; });
-            html += `</div>`;
+            html += `<p style="margin:4px 0;"><strong>✅ Sinónimos:</strong> ${significado.synonyms.join(', ')}</p>`;
           }
-          
+
           // Antónimos
           if (significado.antonyms && significado.antonyms.length > 0) {
-            html += `<div class="dic-tags" style="margin-top:5px;"><strong>Antónimos:</strong> `;
-            significado.antonyms.slice(0, 8).forEach(ant => { html += `<span style="background:#ffe6e6;">${ant}</span>`; });
-            html += `</div>`;
+            html += `<p style="margin:4px 0;"><strong>❌ Antónimos:</strong> ${significado.antonyms.join(', ')}</p>`;
           }
-          html += `</div>`;
+          
+          html += `</div><hr style="border:0.5px solid #dce6f4;">`;
         });
 
         divRes.innerHTML = html;
-
       } catch (err) {
-        divRes.innerHTML = `
-          <p style="color:#d9534f;"><strong>No se encontraron resultados para "${palabraInput}".</strong></p>
-          <p><em>Sugerencias:</em></p>
-          <ul>
-            <li>Escribe la palabra en singular (ej: "árbol" en vez de "árboles").</li>
-            <li>Escribe los verbos en infinitivo (ej: "molestar" en vez de "molestando").</li>
-            <li>Revisa que no haya errores de ortografía.</li>
-          </ul>`;
+        divRes.innerHTML = "<p style='color:red;'>Error de conexión con el servidor del diccionario.</p>";
       }
     }
   </script>
