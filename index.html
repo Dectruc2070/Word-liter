@@ -126,12 +126,13 @@
     }
 
     /* CONTROLES Y MENÚS */
-    select, input[type="number"], input[type="text"], button {
+    select, input[type="number"], input[type="text"], textarea, button {
       font-size: 12px;
       padding: 3px 6px;
       border: 1px solid #7a96df;
       border-radius: 2px;
       background: #ffffff;
+      font-family: 'Segoe UI', sans-serif;
     }
 
     button {
@@ -234,6 +235,7 @@
       border: 2px solid #5a7da8;
       border-radius: 6px;
       width: 750px;
+      max-width: 90%;
       max-height: 85vh;
       overflow-y: auto;
       padding: 20px;
@@ -251,6 +253,27 @@
     }
 
     .modal-header h3 { margin: 0; color: var(--word-blue-dark); }
+    
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; font-weight: bold; font-size: 13px; margin-bottom: 5px; color: var(--word-blue-dark); }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 8px; }
+    
+    .btn-modal { padding: 8px 15px; font-size: 14px; margin-right: 10px; }
+
+    /* Estilos para lista de archivos guardados */
+    .archivo-item {
+      background: #ffffff;
+      border: 1px solid #b2c8e3;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .archivo-info h4 { margin: 0 0 5px 0; color: var(--word-blue-dark); }
+    .archivo-info p { margin: 0; font-size: 12px; color: #555; }
+    .archivo-acciones button { padding: 5px 10px; margin-left: 5px; }
 
     /* ACORDEÓN PARA GUÍAS */
     .acordeon-btn {
@@ -295,19 +318,33 @@
   <!-- Encabezado Word -->
   <div class="header-2007">
     <div class="boton-office">W</div>
-    <span class="titulo-doc">Documento1 - Microsoft Word</span>
+    <span class="titulo-doc" id="tituloDocPrin">Documento1 - Microsoft Word</span>
   </div>
 
   <!-- Navegación de Pestañas -->
   <div class="nav-tabs">
-    <button class="tab-btn active" onclick="cambiarTab('tab-inicio', this)">Inicio</button>
+    <button class="tab-btn active" onclick="cambiarTab('tab-archivo', this)">Archivo</button>
+    <button class="tab-btn" onclick="cambiarTab('tab-inicio', this)">Inicio</button>
     <button class="tab-btn" onclick="cambiarTab('tab-disposicion', this)">Disposición</button>
   </div>
 
   <!-- Cinta de Opciones (Ribbon) -->
   <div class="ribbon-container">
+    
+    <!-- PESTAÑA ARCHIVO (NUEVA) -->
+    <div id="tab-archivo" class="tab-content active">
+      <div class="grupo-ribbon">
+        <button onclick="abrirModal('modalGuardarInterno')">💾 Guardar (En la Web)</button>
+        <button onclick="abrirModalOpcionesAbrir()">📂 Abrir Archivo</button>
+        <button onclick="abrirModal('modalExportar')">📤 Exportar a PC</button>
+        <span class="grupo-label">Gestión de Archivos</span>
+      </div>
+      <!-- Input oculto para cargar archivos de PC -->
+      <input type="file" id="inputArchivoLocal" style="display: none;" accept=".txt,.html,.htm" onchange="leerArchivoLocal(event)">
+    </div>
+
     <!-- PESTAÑA INICIO -->
-    <div id="tab-inicio" class="tab-content active">
+    <div id="tab-inicio" class="tab-content">
       <div class="grupo-ribbon">
         <select id="fuente" onchange="cambiarFuente(this.value)">
           <option value="Calibri">Calibri</option>
@@ -372,6 +409,90 @@
     <span id="infoPaginas">Página 1 de 1</span>
     <span id="contadorPalabras">Palabras: 0</span>
   </div>
+
+
+  <!-- ===============================
+       NUEVOS MODALES DE ARCHIVO 
+  ==================================== -->
+
+  <!-- Modal Exportar a PC -->
+  <div id="modalExportar" class="modal">
+    <div class="modal-contenido" style="width: 450px;">
+      <div class="modal-header">
+        <h3>📤 Exportar Archivo a PC</h3>
+        <button onclick="cerrarModal('modalExportar')" style="padding: 2px 8px; color: red;">X</button>
+      </div>
+      <div class="form-group">
+        <label>Nombre del archivo:</label>
+        <input type="text" id="nombreExportar" value="MiDocumento">
+      </div>
+      <div class="form-group">
+        <label>Formato de archivo:</label>
+        <select id="formatoExportar">
+          <option value="doc">Documento Word (.doc)</option>
+          <option value="txt">Texto Plano (.txt)</option>
+          <option value="html">Página Web (.html)</option>
+        </select>
+      </div>
+      <button class="btn-modal" onclick="ejecutarExportacion()">Exportar Ahora</button>
+    </div>
+  </div>
+
+  <!-- Modal Guardar Interno -->
+  <div id="modalGuardarInterno" class="modal">
+    <div class="modal-contenido" style="width: 450px;">
+      <div class="modal-header">
+        <h3>💾 Guardar en la Web</h3>
+        <button onclick="cerrarModal('modalGuardarInterno')" style="padding: 2px 8px; color: red;">X</button>
+      </div>
+      <p style="font-size: 12px; color: #555;">Este archivo se guardará en la memoria local de tu navegador.</p>
+      <div class="form-group">
+        <label>Nombre del documento:</label>
+        <input type="text" id="nombreGuardar" placeholder="Ej: Capítulo 1 - El Inicio">
+      </div>
+      <div class="form-group">
+        <label>Descripción / Notas (Opcional):</label>
+        <textarea id="descGuardar" rows="3" placeholder="Ej: Borrador final de la escena de acción..."></textarea>
+      </div>
+      <button class="btn-modal" onclick="ejecutarGuardadoInterno()">Guardar Documento</button>
+    </div>
+  </div>
+
+  <!-- Modal Opciones de Abrir -->
+  <div id="modalAbrirOpciones" class="modal">
+    <div class="modal-contenido" style="width: 400px; text-align: center;">
+      <div class="modal-header">
+        <h3 style="margin: 0 auto;">📂 Abrir Archivo</h3>
+        <button onclick="cerrarModal('modalAbrirOpciones')" style="padding: 2px 8px; color: red; position: absolute; right: 20px;">X</button>
+      </div>
+      <p>¿Desde dónde deseas abrir el archivo?</p>
+      <br>
+      <button class="btn-modal" style="display: block; width: 100%; margin-bottom: 15px; padding: 15px;" onclick="document.getElementById('inputArchivoLocal').click(); cerrarModal('modalAbrirOpciones');">
+        💻 <b>Abrir archivo externo</b><br><small>(Desde mi Computadora / PC)</small>
+      </button>
+      <button class="btn-modal" style="display: block; width: 100%; padding: 15px;" onclick="abrirModalListaInternos()">
+        🌐 <b>Abrir archivo interno</b><br><small>(Guardado en esta página web)</small>
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal Lista de Archivos Internos -->
+  <div id="modalListaInternos" class="modal">
+    <div class="modal-contenido">
+      <div class="modal-header">
+        <h3>🌐 Mis Archivos Guardados</h3>
+        <button onclick="cerrarModal('modalListaInternos')" style="padding: 2px 8px; color: red;">X</button>
+      </div>
+      <div id="contenedorListaArchivos" style="max-height: 400px; overflow-y: auto; padding-right: 5px;">
+        <!-- Los archivos se cargarán aquí por JS -->
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ===============================
+       MODALES ANTERIORES (NO BORRADOS) 
+  ==================================== -->
 
   <!-- MODAL DICCIONARIO AVANZADO -->
   <div id="modalDiccionario" class="modal">
@@ -459,8 +580,6 @@
           <span class="ejemplo-bien">—Te estuve esperando. —Juan se cruzó de brazos.</span></li>
         </ul>
       </div>
-
-      <!-- NUEVAS SECCIONES AÑADIDAS -->
       
       <button class="acordeon-btn" onclick="toggleAcordeon('guiaTiemposDialogo')">⏱️ 6. Ritmo y Longitud de Diálogos</button>
       <div id="guiaTiemposDialogo" class="acordeon-panel">
@@ -590,7 +709,184 @@
       panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
     }
 
-    // DICCIONARIO
+
+    /* =========================================
+       NUEVAS FUNCIONES: ARCHIVO (EXPORTAR, GUARDAR, ABRIR)
+       ========================================= */
+       
+    // EXPORTAR A PC
+    function ejecutarExportacion() {
+      const nombre = document.getElementById('nombreExportar').value.trim() || 'DocumentoSinNombre';
+      const formato = document.getElementById('formatoExportar').value;
+      let contenidoFinal = '';
+      let mimeType = '';
+
+      const hojas = document.querySelectorAll('.hoja');
+
+      if (formato === 'txt') {
+        hojas.forEach(h => contenidoFinal += h.innerText + '\n\n');
+        mimeType = 'text/plain';
+      } else if (formato === 'html') {
+        hojas.forEach(h => contenidoFinal += h.innerHTML + '<br><br>');
+        mimeType = 'text/html';
+      } else if (formato === 'doc') {
+        // Envoltura básica para simular un documento doc compatible con Word
+        contenidoFinal = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+        <head><meta charset='utf-8'></head><body>`;
+        hojas.forEach(h => {
+          contenidoFinal += h.innerHTML + '<br clear=all style="mso-special-character:line-break;page-break-before:always">';
+        });
+        contenidoFinal += `</body></html>`;
+        mimeType = 'application/msword';
+      }
+
+      const blob = new Blob([contenidoFinal], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${nombre}.${formato}`;
+      a.click();
+      URL.revokeObjectURL(url);
+      
+      cerrarModal('modalExportar');
+    }
+
+    // GUARDAR INTERNO (LOCALSTORAGE)
+    function ejecutarGuardadoInterno() {
+      const nombre = document.getElementById('nombreGuardar').value.trim() || 'Documento Sin Título';
+      const desc = document.getElementById('descGuardar').value.trim() || 'Sin descripción.';
+      
+      // Obtenemos todo el HTML del workspace para guardar todas las páginas y su formato
+      const contenidoHTML = document.getElementById('workspace').innerHTML;
+      
+      const archivo = {
+        id: Date.now(), // ID único basado en el tiempo
+        nombre: nombre,
+        descripcion: desc,
+        fecha: new Date().toLocaleString(),
+        contenido: contenidoHTML
+      };
+
+      // Recuperar array existente o crear uno nuevo
+      let archivosGuardados = JSON.parse(localStorage.getItem('MisDocumentosWordJS') || '[]');
+      archivosGuardados.push(archivo);
+      
+      // Guardar de nuevo en el navegador
+      localStorage.setItem('MisDocumentosWordJS', JSON.stringify(archivosGuardados));
+      
+      document.getElementById('tituloDocPrin').innerText = `${nombre} - Microsoft Word`;
+      
+      cerrarModal('modalGuardarInterno');
+      alert('¡Documento guardado correctamente en la web!');
+      document.getElementById('nombreGuardar').value = '';
+      document.getElementById('descGuardar').value = '';
+    }
+
+    // ABRIR OPCIONES
+    function abrirModalOpcionesAbrir() {
+      abrirModal('modalAbrirOpciones');
+    }
+
+    // ABRIR EXTERNO (DESDE PC)
+    function leerArchivoLocal(event) {
+      const archivo = event.target.files[0];
+      if (!archivo) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const contenido = e.target.result;
+        
+        // Limpiar espacio de trabajo
+        const ws = document.getElementById('workspace');
+        ws.innerHTML = ''; 
+        
+        // Crear una nueva hoja con el contenido
+        const nuevaHoja = document.createElement('div');
+        nuevaHoja.className = 'hoja';
+        nuevaHoja.contentEditable = "true";
+        nuevaHoja.spellcheck = true;
+        nuevaHoja.oninput = function() { gestionarHojas(this); };
+
+        if (archivo.name.endsWith('.txt')) {
+          nuevaHoja.innerText = contenido;
+        } else {
+          nuevaHoja.innerHTML = contenido;
+        }
+
+        ws.appendChild(nuevaHoja);
+        
+        // Resetear barra superior y estados
+        document.getElementById('tituloDocPrin').innerText = `${archivo.name} - Microsoft Word`;
+        actualizarContador();
+        actualizarInfoPaginas();
+      };
+      
+      reader.readAsText(archivo);
+      // Resetear el input para permitir volver a cargar el mismo archivo si es necesario
+      event.target.value = ''; 
+    }
+
+    // ABRIR INTERNO (LISTA DE ARCHIVOS WEB)
+    function abrirModalListaInternos() {
+      cerrarModal('modalAbrirOpciones');
+      const contenedor = document.getElementById('contenedorListaArchivos');
+      const archivos = JSON.parse(localStorage.getItem('MisDocumentosWordJS') || '[]');
+      
+      if (archivos.length === 0) {
+        contenedor.innerHTML = '<p style="text-align:center; color:#555;">No tienes archivos guardados internamente.</p>';
+      } else {
+        let html = '';
+        archivos.reverse().forEach(arch => {
+          html += `
+            <div class="archivo-item">
+              <div class="archivo-info">
+                <h4>${arch.nombre}</h4>
+                <p><strong>Fecha:</strong> ${arch.fecha}</p>
+                <p><em>${arch.descripcion}</em></p>
+              </div>
+              <div class="archivo-acciones">
+                <button onclick="cargarDocumentoInterno(${arch.id})" style="background:#dce6f4;">Abrir</button>
+                <button onclick="eliminarDocumentoInterno(${arch.id})" style="color:red; background:#ffe6e6;">Borrar</button>
+              </div>
+            </div>
+          `;
+        });
+        contenedor.innerHTML = html;
+      }
+      
+      abrirModal('modalListaInternos');
+    }
+
+    function cargarDocumentoInterno(id) {
+      const archivos = JSON.parse(localStorage.getItem('MisDocumentosWordJS') || '[]');
+      const archivo = archivos.find(a => a.id === id);
+      
+      if (archivo) {
+        document.getElementById('workspace').innerHTML = archivo.contenido;
+        document.getElementById('tituloDocPrin').innerText = `${archivo.nombre} - Microsoft Word`;
+        
+        // Reconectar los eventos oninput a las hojas recuperadas
+        document.querySelectorAll('.hoja').forEach(h => {
+          h.oninput = function() { gestionarHojas(this); };
+        });
+
+        actualizarContador();
+        actualizarInfoPaginas();
+        cerrarModal('modalListaInternos');
+      }
+    }
+
+    function eliminarDocumentoInterno(id) {
+      if (confirm("¿Estás seguro de que deseas eliminar este archivo de forma permanente?")) {
+        let archivos = JSON.parse(localStorage.getItem('MisDocumentosWordJS') || '[]');
+        archivos = archivos.filter(a => a.id !== id);
+        localStorage.setItem('MisDocumentosWordJS', JSON.stringify(archivos));
+        abrirModalListaInternos(); // Recargar la lista
+      }
+    }
+
+
+    // DICCIONARIO (Anterior)
     async function buscarPalabra() {
       const palabra = document.getElementById('palabraBuscar').value.trim().toLowerCase();
       const divRes = document.getElementById('resultadosDiccionario');
