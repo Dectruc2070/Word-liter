@@ -398,6 +398,7 @@
         <button onclick="cerrarModal('modalAyuda')" style="padding: 2px 8px; color: red;">X</button>
       </div>
       
+      <!-- Secciones anteriores (NO BORRADAS) -->
       <button class="acordeon-btn" onclick="toggleAcordeon('guiaErrores')">🛑 1. Errores Ortográficos Comunes</button>
       <div id="guiaErrores" class="acordeon-panel">
         <ul>
@@ -457,6 +458,40 @@
           <li><strong>Verbos de acción (sonrió, miró, suspiró):</strong> Si es una acción (no de habla), el inciso empieza en mayúscula y se separa con un punto.<br>
           <span class="ejemplo-bien">—Te estuve esperando. —Juan se cruzó de brazos.</span></li>
         </ul>
+      </div>
+
+      <!-- NUEVAS SECCIONES AÑADIDAS -->
+      
+      <button class="acordeon-btn" onclick="toggleAcordeon('guiaTiemposDialogo')">⏱️ 6. Ritmo y Longitud de Diálogos</button>
+      <div id="guiaTiemposDialogo" class="acordeon-panel">
+        <p><strong class="etiqueta-dic">Diálogos Cortos (Ping-Pong):</strong> Ideales para discusiones rápidas, interrogatorios o momentos de alta tensión. Elimina las acotaciones del narrador si está claro quién habla, para que el ritmo sea frenético.</p>
+        <p><span class="ejemplo-bien">—¿Dónde lo escondiste?<br>—No te lo diré.<br>—¡Dímelo ya!</span></p>
+        
+        <p><strong class="etiqueta-dic">Diálogos Largos:</strong> Si una conversación dura mucho, intercala "beats" (acciones físicas o gestos) para anclar la escena visualmente y evitar el "síndrome de cabezas parlantes en el vacío".</p>
+        <p><span class="ejemplo-bien">—Es muy difícil —dijo él, frotándose los ojos—. Llevo semanas intentándolo y no funciona.</span></p>
+
+        <p><strong class="etiqueta-dic">Diálogos Larguísimos (Monólogos):</strong> Cuando un solo personaje habla durante varios párrafos seguidos <strong>NO</strong> cierres ni abras raya (—) en cada párrafo. En su lugar, usa las <strong>comillas de cierre o de seguir (»)</strong> al inicio del segundo párrafo para indicarle al lector que sigue hablando la misma persona.</p>
+        <p><span class="ejemplo-bien">—Todo comenzó hace diez años. Recuerdo que llovía mucho esa noche y no teníamos dónde refugiarnos.<br>»Caminamos por horas hasta encontrar aquella vieja cabaña.</span></p>
+      </div>
+
+      <button class="acordeon-btn" onclick="toggleAcordeon('guiaRedundancia')">♻️ 7. Redundancias y Pleonasmos</button>
+      <div id="guiaRedundancia" class="acordeon-panel">
+        <p>Un pleonasmo es el uso de palabras innecesarias para explicar algo que ya está implícito en la palabra principal. Ensuciarás tu prosa si abusas de ellos.</p>
+        <ul>
+          <li><span class="ejemplo-mal">Subir arriba / Bajar abajo</span> 👉 <span class="ejemplo-bien">Subir / Bajar</span></li>
+          <li><span class="ejemplo-mal">Entrar adentro / Salir afuera</span> 👉 <span class="ejemplo-bien">Entrar / Salir</span></li>
+          <li><span class="ejemplo-mal">Persona humana</span> 👉 <span class="ejemplo-bien">Persona</span></li>
+          <li><span class="ejemplo-mal">Sorpresa inesperada</span> 👉 <span class="ejemplo-bien">Sorpresa</span> (Toda sorpresa es inesperada).</li>
+        </ul>
+      </div>
+
+      <button class="acordeon-btn" onclick="toggleAcordeon('guiaVozActiva')">💪 8. Voz Activa vs. Voz Pasiva</button>
+      <div id="guiaVozActiva" class="acordeon-panel">
+        <p>En español literario es preferible usar la <strong>Voz Activa</strong>. Le da fuerza a tu escritura y hace que la lectura fluya más rápido. La voz pasiva suele sentirse artificial o robótica.</p>
+        <p><strong>Voz Pasiva (Débil):</strong> El sujeto recibe la acción.<br>
+        <span class="ejemplo-mal">La carta fue leída por el rey frente a la corte.</span></p>
+        <p><strong>Voz Activa (Fuerte):</strong> El sujeto ejecuta la acción directamente.<br>
+        <span class="ejemplo-bien">El rey leyó la carta frente a la corte.</span></p>
       </div>
 
     </div>
@@ -555,7 +590,7 @@
       panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
     }
 
-    // NUEVO DICCIONARIO
+    // DICCIONARIO
     async function buscarPalabra() {
       const palabra = document.getElementById('palabraBuscar').value.trim().toLowerCase();
       const divRes = document.getElementById('resultadosDiccionario');
