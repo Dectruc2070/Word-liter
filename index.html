@@ -233,7 +233,7 @@
       background: #f0f4fc;
       border: 2px solid #5a7da8;
       border-radius: 6px;
-      width: 700px;
+      width: 750px;
       max-height: 85vh;
       overflow-y: auto;
       padding: 20px;
@@ -286,6 +286,8 @@
       padding: 2px 5px;
       border-radius: 3px;
     }
+    .ejemplo-bien { color: #006600; font-style: italic; }
+    .ejemplo-mal { color: #990000; text-decoration: line-through; margin-right: 10px;}
   </style>
 </head>
 <body>
@@ -322,8 +324,8 @@
       </div>
 
       <div class="grupo-ribbon">
-        <button onclick="abrirModal('modalDiccionario')">📖 Diccionario Completo</button>
-        <button onclick="abrirModal('modalAyuda')">💡 Guías de Escritura</button>
+        <button onclick="abrirModal('modalDiccionario')">📖 Diccionario</button>
+        <button onclick="abrirModal('modalAyuda')">💡 Guías y Correcciones</button>
         <span class="grupo-label">Asistencia</span>
       </div>
     </div>
@@ -396,43 +398,64 @@
         <button onclick="cerrarModal('modalAyuda')" style="padding: 2px 8px; color: red;">X</button>
       </div>
       
-      <button class="acordeon-btn" onclick="toggleAcordeon('guiaDialogosFormato')">💬 1. Reglas de Formato para Diálogos (Raya)</button>
-      <div id="guiaDialogosFormato" class="acordeon-panel">
-        <p>En español no se usan las comillas inglesas (" ") para los diálogos en novelas, se usa la <strong>raya (—)</strong>, que puedes escribir con Alt + 0151.</p>
+      <button class="acordeon-btn" onclick="toggleAcordeon('guiaErrores')">🛑 1. Errores Ortográficos Comunes</button>
+      <div id="guiaErrores" class="acordeon-panel">
         <ul>
-          <li><strong>Verbos de dicción (dijo, respondió, preguntó, exclamó):</strong> Si el narrador interrumpe con uno de estos verbos, la raya va pegada al verbo y empieza en minúscula (incluso si el diálogo termina en signo de exclamación o interrogación).<br>
-          <em>Ejemplo:</em> —¡No pienso ir! —gritó María enfurecida.</li>
-          <li><strong>Verbos de acción (sonrió, caminó, miró):</strong> Si el narrador describe una acción que no es de habla, el inciso va con mayúscula y separado por un punto.<br>
-          <em>Ejemplo:</em> —Te estuve esperando. —Juan se cruzó de brazos y suspiró.</li>
+          <li><strong>Ay / Hay / Ahí:</strong> 
+            <br><em>Ay:</em> Exclamación. <em>Hay:</em> Del verbo haber. <em>Ahí:</em> Lugar.
+            <br><span class="ejemplo-bien">Ejemplo: ¡Ay! Ahí hay una araña gigante.</span></li>
+          <hr style="border:0.5px solid #eee;">
+          <li><strong>A ver / Haber:</strong>
+            <br><em>A ver:</em> Mirar, observar. <em>Haber:</em> Verbo auxiliar.
+            <br><span class="ejemplo-bien">Ejemplo: Vamos a ver qué hay de cenar. Debe haber algo en la nevera.</span></li>
+          <hr style="border:0.5px solid #eee;">
+          <li><strong>Sino / Si no:</strong>
+            <br><em>Sino:</em> Contraste o destino. <em>Si no:</em> Condicional negativo.
+            <br><span class="ejemplo-bien">Ejemplo: No fue Pedro, sino Juan. Si no vienes, me iré solo.</span></li>
+          <hr style="border:0.5px solid #eee;">
+          <li><strong>Hecho / Echo:</strong>
+            <br><em>Hecho:</em> Del verbo hacer o un suceso. <em>Echo:</em> Del verbo echar (tirar, expulsar).
+            <br><span class="ejemplo-bien">Ejemplo: Ya he hecho la tarea. Siempre echo la basura a las ocho.</span></li>
         </ul>
       </div>
 
-      <button class="acordeon-btn" onclick="toggleAcordeon('guiaLongitud')">⏱️ 2. Longitud de los Diálogos: Cortos, Largos y Larguísimos</button>
-      <div id="guiaLongitud" class="acordeon-panel">
-        <p><strong class="etiqueta-dic">Diálogos Cortos:</strong> Generan tensión, ritmo rápido y acción. Útiles para discusiones acaloradas o peligro.<br>
-        <em>Ejemplo:</em><br>
-        —¡Corre!<br>
-        —No puedo...<br>
-        —¡Te van a atrapar, levántate!</p>
-        
-        <p><strong class="etiqueta-dic">Diálogos Largos (1 párrafo):</strong> Útiles para explicaciones, confesiones o reflexiones. Frenan el ritmo de la lectura.<br>
-        <em>Ejemplo:</em><br>
-        —La verdad es que nunca quise lastimarte —confesó él, mirando al suelo—. Pensé que si me alejaba sin decir nada, sería más fácil para los dos olvidar todo lo que pasó aquel verano, pero me equivoqué.</p>
+      <button class="acordeon-btn" onclick="toggleAcordeon('guiaPuntuacion')">📝 2. Puntuación y Gramática: La coma y los puntos</button>
+      <div id="guiaPuntuacion" class="acordeon-panel">
+        <p><strong class="etiqueta-dic">La "Coma Criminal":</strong> NUNCA debes separar el sujeto del predicado con una coma, sin importar lo largo que sea el sujeto.</p>
+        <p><span class="ejemplo-mal">El soldado que regresó de la guerra, abrazó a su madre.</span><br>
+        <span class="ejemplo-bien">El soldado que regresó de la guerra abrazó a su madre.</span></p>
 
-        <p><strong class="etiqueta-dic">Diálogos Larguísimos (Múltiples párrafos del mismo personaje):</strong> Pueden aburrir si no se manejan bien. Si un personaje habla por varios párrafos, a partir del segundo párrafo se debe poner <strong>comillas latinas de cierre (»)</strong> al inicio para indicar que sigue hablando el mismo personaje.<br>
-        <em>Ejemplo:</em><br>
-        —La historia comenzó hace mucho tiempo —dijo el abuelo—. Específicamente en 1980, cuando el invierno fue tan duro que los ríos se congelaron.<br>
-        »Nadie podía salir de sus casas. La comida escaseaba y el miedo se apoderaba de nosotros. Fue entonces cuando vimos esa extraña luz en el cielo.</p>
+        <p><strong class="etiqueta-dic">Puntos y signos (¿ ¡):</strong> En español los signos de interrogación y exclamación se abren y se cierran (¿? ¡!). Después de un signo de cierre (?), <strong>jamás se escribe un punto</strong>, porque el signo ya lo incluye.</p>
+        <p><span class="ejemplo-mal">¿A qué hora llegas?. Te estoy esperando.</span><br>
+        <span class="ejemplo-bien">¿A qué hora llegas? Te estoy esperando.</span></p>
       </div>
 
-      <button class="acordeon-btn" onclick="toggleAcordeon('guiaNaturales')">🎭 3. Cómo hacer que los diálogos suenen naturales</button>
-      <div id="guiaNaturales" class="acordeon-panel">
+      <button class="acordeon-btn" onclick="toggleAcordeon('guiaVicios')">🚫 3. Vicios de escritura a evitar</button>
+      <div id="guiaVicios" class="acordeon-panel">
+        <p><strong class="etiqueta-dic">Abuso de adverbios en "-mente":</strong> Debilitan tu prosa. Usa verbos más fuertes en su lugar.</p>
+        <p><span class="ejemplo-mal">Corrió rápidamente hacia la puerta.</span><br>
+        <span class="ejemplo-bien">Se lanzó a la carrera hacia la puerta. / Esprintó hacia la puerta.</span></p>
+
+        <p><strong class="etiqueta-dic">Abuso del gerundio de posterioridad:</strong> El gerundio (terminación -ando, -iendo) debe indicar una acción simultánea al verbo principal, nunca una consecuencia o algo que pasó después.</p>
+        <p><span class="ejemplo-mal">El ladrón huyó del banco, siendo arrestado horas más tarde.</span><br>
+        <span class="ejemplo-bien">El ladrón huyó del banco y fue arrestado horas más tarde.</span></p>
+      </div>
+
+      <button class="acordeon-btn" onclick="toggleAcordeon('guiaNarrativa')">📖 4. Regla de Oro: Muestra, no cuentes</button>
+      <div id="guiaNarrativa" class="acordeon-panel">
+        <p>En lugar de decirle al lector cómo se siente un personaje, descríbele las reacciones físicas y el entorno para que el lector lo deduzca. Esto hace la lectura inmersiva.</p>
+        <p><strong>Contar (Aburrido):</strong> <span class="ejemplo-mal">María estaba muy nerviosa y asustada por el examen.</span></p>
+        <p><strong>Mostrar (Inmersivo):</strong> <span class="ejemplo-bien">A María le temblaban las manos. Mordió la tapa de su bolígrafo hasta agrietar el plástico mientras su mirada saltaba de una pregunta a otra sin entender nada.</span></p>
+      </div>
+
+      <button class="acordeon-btn" onclick="toggleAcordeon('guiaDialogos')">💬 5. Reglas de Diálogos (Raya y Formato)</button>
+      <div id="guiaDialogos" class="acordeon-panel">
+        <p>En español usamos la <strong>raya (—)</strong> (Alt + 0151), no el guion corto (-). Va pegada a la primera letra.</p>
         <ul>
-          <li><strong>No uses sus nombres constantemente:</strong> En la vida real rara vez decimos el nombre de la persona con la que hablamos. (Malo: <em>—Hola, Pedro. —¿Cómo estás, María?</em> / Bueno: <em>—Hola. —¿Qué tal?</em>)</li>
-          <li><strong>Deja que se interrumpan:</strong> Usa puntos suspensivos para reflejar dudas o cortes.<br>
-          <em>Ejemplo:</em> —Yo no quería que él...<br>—¡No mientas! Te vi hacerlo.</li>
-          <li><strong>Evita que suenen como enciclopedias:</strong> La gente usa muletillas, contracciones o deja frases sin terminar. No los hagas hablar como si estuvieran leyendo un libro de texto.</li>
-          <li><strong>La regla de oro: Lee tus diálogos en voz alta.</strong> Si te quedas sin aire o suenas como un robot, debes reescribirlo.</li>
+          <li><strong>Verbos de dicción (dijo, respondió, exclamó):</strong> Si el narrador interrumpe, la raya va pegada al verbo y empieza en minúscula.<br>
+          <span class="ejemplo-bien">—¡No pienso ir! —gritó Carlos enfurecido.</span></li>
+          <li><strong>Verbos de acción (sonrió, miró, suspiró):</strong> Si es una acción (no de habla), el inciso empieza en mayúscula y se separa con un punto.<br>
+          <span class="ejemplo-bien">—Te estuve esperando. —Juan se cruzó de brazos.</span></li>
         </ul>
       </div>
 
@@ -532,7 +555,7 @@
       panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
     }
 
-    // NUEVO DICCIONARIO: Definiciones, Sinónimos y Antónimos
+    // NUEVO DICCIONARIO
     async function buscarPalabra() {
       const palabra = document.getElementById('palabraBuscar').value.trim().toLowerCase();
       const divRes = document.getElementById('resultadosDiccionario');
@@ -541,16 +564,15 @@
       divRes.innerHTML = "<p>Buscando en el diccionario...</p>";
       
       try {
-        // Usando Free Dictionary API (Soporta español)
         const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/es/${palabra}`);
         
         if (!res.ok) {
-          divRes.innerHTML = `<p style="color:red;">No se encontró la palabra <b>"${palabra}"</b> en este diccionario gratuito. Verifica la ortografía, que esté en singular o en su verbo en infinitivo.</p>`;
+          divRes.innerHTML = `<p style="color:red;">No se encontró la palabra <b>"${palabra}"</b>. Verifica la ortografía, que esté en singular o el verbo en infinitivo.</p>`;
           return;
         }
 
         const datos = await res.json();
-        const info = datos[0]; // Tomamos el primer resultado
+        const info = datos[0];
         
         let html = `<h2 style="margin-top:0; color:var(--word-blue-dark); text-transform:capitalize;">${info.word}</h2>`;
 
@@ -558,7 +580,6 @@
           html += `<div style="margin-bottom:15px;">`;
           html += `<span class="etiqueta-dic">${significado.partOfSpeech}</span>`;
           
-          // Definiciones
           if (significado.definitions.length > 0) {
             html += `<ul style="margin-top:5px; margin-bottom:5px;">`;
             significado.definitions.slice(0, 4).forEach(def => {
@@ -567,12 +588,10 @@
             html += `</ul>`;
           }
 
-          // Sinónimos
           if (significado.synonyms && significado.synonyms.length > 0) {
             html += `<p style="margin:4px 0;"><strong>✅ Sinónimos:</strong> ${significado.synonyms.join(', ')}</p>`;
           }
 
-          // Antónimos
           if (significado.antonyms && significado.antonyms.length > 0) {
             html += `<p style="margin:4px 0;"><strong>❌ Antónimos:</strong> ${significado.antonyms.join(', ')}</p>`;
           }
