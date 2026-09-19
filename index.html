@@ -1,1 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mi Word 90s</title>
+  <style>
+    /* Estilo Retro de Windows 95/98 */
+    body {
+      background-color: #008080; /* Azul verdoso clásico de Windows */
+      font-family: "MS Sans Serif", Tahoma, sans-serif;
+      margin: 20px;
+    }
 
+    .ventana {
+      background-color: #c0c0c0;
+      border: 3px solid;
+      border-color: #ffffff #808080 #808080 #ffffff;
+      width: 800px;
+      margin: 0 auto;
+      box-shadow: 4px 4px 10px rgba(0,0,0,0.5);
+    }
+
+    .barra-titulo {
+      background: linear-gradient(90deg, #000080, #1084d0);
+      color: white;
+      font-weight: bold;
+      padding: 4px 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .barra-herramientas {
+      background-color: #c0c0c0;
+      padding: 6px;
+      border-bottom: 2px solid #808080;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    /* Botones biselados estilo 90s */
+    button, select {
+      background-color: #c0c0c0;
+      border: 2px solid;
+      border-color: #ffffff #808080 #808080 #ffffff;
+      padding: 2px 6px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    button:active {
+      border-color: #808080 #ffffff #ffffff #808080;
+    }
+
+    /* Hoja de papel */
+    .hoja-trabajo {
+      background-color: #808080;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    #editor {
+      background-color: #ffffff;
+      width: 600px;
+      min-height: 500px;
+      padding: 40px;
+      border: 2px solid;
+      border-color: #808080 #ffffff #ffffff #808080;
+      outline: none;
+      font-family: "Times New Roman", serif;
+      font-size: 16px;
+      line-height: 1.5;
+      color: black;
+      overflow-y: auto;
+    }
+
+    .barra-estado {
+      border-top: 2px solid #ffffff;
+      padding: 4px 8px;
+      font-size: 12px;
+      background-color: #c0c0c0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ventana">
+    <!-- Barra de título de la ventana -->
+    <div class="barra-titulo">
+      <span>Documento1 - Microsoft Word (1995 Edition)</span>
+      <button onclick="alert('¡Minimizar!')">_</button>
+    </div>
+
+    <!-- Barra de herramientas (Fuentes, Tamaños, Formato) -->
+    <div class="barra-herramientas">
+      <select id="fuente" onchange="ejecutarComando('fontName', this.value)">
+        <option value="Times New Roman">Times New Roman</option>
+        <option value="Arial">Arial</option>
+        <option value="Courier New">Courier New</option>
+        <option value="Comic Sans MS">Comic Sans MS</option>
+      </select>
+
+      <select id="tamano" onchange="ejecutarComando('fontSize', this.value)">
+        <option value="3">12pt</option>
+        <option value="4">14pt</option>
+        <option value="5">18pt</option>
+        <option value="6">24pt</option>
+      </select>
+
+      <button onclick="ejecutarComando('bold')"><b>N</b></button>
+      <button onclick="ejecutarComando('italic')"><i>K</i></button>
+      <button onclick="ejecutarComando('underline')"><u>S</u></button>
+    </div>
+
+    <!-- Hoja de escritura -->
+    <div class="hoja-trabajo">
+      <div id="editor" contenteditable="true" spellcheck="true">
+        Escribe tu texto aquí...
+      </div>
+    </div>
+
+    <!-- Barra de estado inferior -->
+    <div class="barra-estado">
+      Pág 1 &nbsp;&nbsp;&nbsp; Sec 1 &nbsp;&nbsp;&nbsp; Corrector ortográfico: ACTIVADO
+    </div>
+  </div>
+
+  <script>
+    // Función para aplicar formatos al texto seleccionado
+    function ejecutarComando(comando, valor = null) {
+      document.execCommand(comando, false, valor);
+    }
+  </script>
+
+</body>
+</html>
