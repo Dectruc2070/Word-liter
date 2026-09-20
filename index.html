@@ -57,6 +57,35 @@
       margin-right: 10px;
     }
 
+    /* NUEVO: Barra de acceso rápido (Deshacer / Rehacer) */
+    .quick-access {
+      display: flex;
+      gap: 2px;
+      margin-right: 15px;
+      border-right: 1px solid #5a7da8;
+      padding-right: 10px;
+    }
+
+    .btn-quick {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--word-blue-dark);
+      font-size: 16px;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 3px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: none;
+    }
+
+    .btn-quick:hover {
+      background: rgba(255, 255, 255, 0.4);
+      border: 1px solid #c0d5f0;
+    }
+
     .titulo-doc {
       font-size: 12px;
       color: var(--word-blue-dark);
@@ -200,7 +229,7 @@
     .hoja {
       background: #ffffff;
       width: 21cm;
-      /* CORRECCIÓN PRINCIPAL: Ahora la altura es automática para que el texto nunca se corte */
+      /* HOJA CONTINUA INFINITA */
       min-height: 29.7cm;
       height: auto; 
       padding-top: var(--margin-top);
@@ -286,7 +315,7 @@
     .archivo-info p { margin: 0; font-size: 12px; color: #555; }
     .archivo-acciones button { padding: 5px 10px; margin-left: 5px; }
 
-    /* ESTILOS RESTAURADOS PARA LAS GUÍAS */
+    /* ESTILOS PARA LAS GUÍAS */
     .acordeon-btn {
       width: 100%;
       text-align: left;
@@ -323,6 +352,13 @@
   <!-- Encabezado Word -->
   <div class="header-2007">
     <div class="boton-office">W</div>
+    
+    <!-- NUEVO: Botones Deshacer y Rehacer -->
+    <div class="quick-access">
+      <button class="btn-quick" onclick="ejecutar('undo')" title="Deshacer (Ctrl+Z)">↶</button>
+      <button class="btn-quick" onclick="ejecutar('redo')" title="Rehacer (Ctrl+Y)">↷</button>
+    </div>
+
     <span class="titulo-doc" id="tituloDocPrin">Documento1 - Microsoft Word</span>
   </div>
 
@@ -404,14 +440,11 @@
         <button onclick="cambiarOrientacion('horizontal')">📜 Horizontal</button>
         <span class="grupo-label">Orientación</span>
       </div>
-      <div class="grupo-ribbon">
-        <button onclick="crearNuevaHojaManual()">📑 Salto de página</button>
-        <span class="grupo-label">Páginas</span>
-      </div>
+      <!-- ELIMINADO: El botón de salto de página se quitó de aquí -->
     </div>
   </div>
 
-  <!-- ÁREA DE TRABAJO -->
+  <!-- ÁREA DE TRABAJO (LIENZO ÚNICO) -->
   <div class="workspace" id="workspace">
     <div class="hoja" contenteditable="true" spellcheck="true" oninput="actualizarContador()">
       Comienza a escribir tu texto aquí...
@@ -492,7 +525,7 @@
   </div>
 
 
-  <!-- MODALES DE ASISTENCIA (Diccionario y Guías Restauradas) -->
+  <!-- MODALES DE ASISTENCIA (Diccionario y Guías) -->
   <div id="modalDiccionario" class="modal">
     <div class="modal-contenido">
       <div class="modal-header">
@@ -512,7 +545,6 @@
         <button onclick="cerrarModal('modalAyuda')" style="padding: 2px 8px; color: red;">X</button>
       </div>
       
-      <!-- CONTENIDO DE GUÍAS RESTAURADO -->
       <button class="acordeon-btn" onclick="toggleAcordeon('guiaErrores')">🛑 1. Errores Ortográficos Comunes</button>
       <div id="guiaErrores" class="acordeon-panel">
         <ul>
@@ -591,7 +623,7 @@
       panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
     }
 
-    // Comandos de formato
+    // Comandos de formato (Incluye Deshacer / Rehacer)
     function ejecutar(com, val = null) { 
       document.execCommand(com, false, val); 
       document.querySelector('.hoja').focus(); 
@@ -627,19 +659,6 @@
         if (tipo === 'horizontal') h.classList.add('horizontal');
         else h.classList.remove('horizontal');
       });
-    }
-
-    // Hojas Manuales (Si el usuario realmente quiere otra caja separada)
-    function crearNuevaHojaManual() {
-      const ws = document.getElementById('workspace');
-      const nueva = document.createElement('div');
-      nueva.className = 'hoja';
-      if (document.querySelector('.hoja').classList.contains('horizontal')) nueva.classList.add('horizontal');
-      nueva.contentEditable = "true";
-      nueva.spellcheck = true;
-      nueva.oninput = function() { actualizarContador(); };
-      ws.appendChild(nueva);
-      nueva.focus();
     }
 
     function actualizarContador() {
