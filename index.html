@@ -154,7 +154,6 @@
       border-color: #e2a300;
     }
     
-    /* Input color especial */
     input[type="color"] {
       padding: 0;
       border: 1px solid #7a96df;
@@ -186,7 +185,7 @@
       margin-bottom: 4px;
     }
 
-    /* ÁREA DE TRABAJO Y HOJAS A4 SEPARADAS */
+    /* ÁREA DE TRABAJO Y HOJAS */
     .workspace {
       flex: 1;
       background-color: #8e9bb0;
@@ -201,8 +200,9 @@
     .hoja {
       background: #ffffff;
       width: 21cm;
+      /* CORRECCIÓN PRINCIPAL: Ahora la altura es automática para que el texto nunca se corte */
       min-height: 29.7cm;
-      height: 29.7cm;
+      height: auto; 
       padding-top: var(--margin-top);
       padding-bottom: var(--margin-bottom);
       padding-left: var(--margin-left);
@@ -213,13 +213,11 @@
       font-size: 16px;
       line-height: 1.6;
       color: #000000;
-      overflow: hidden;
       word-wrap: break-word;
     }
 
     .hoja.horizontal {
       width: 29.7cm;
-      height: 21cm;
       min-height: 21cm;
     }
 
@@ -273,7 +271,7 @@
     .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 8px; }
     .btn-modal { padding: 8px 15px; font-size: 14px; margin-right: 10px; }
 
-    /* Estilos lista de archivos guardados */
+    /* Estilos de archivos guardados */
     .archivo-item {
       background: #ffffff;
       border: 1px solid #b2c8e3;
@@ -287,6 +285,37 @@
     .archivo-info h4 { margin: 0 0 5px 0; color: var(--word-blue-dark); }
     .archivo-info p { margin: 0; font-size: 12px; color: #555; }
     .archivo-acciones button { padding: 5px 10px; margin-left: 5px; }
+
+    /* ESTILOS RESTAURADOS PARA LAS GUÍAS */
+    .acordeon-btn {
+      width: 100%;
+      text-align: left;
+      padding: 10px;
+      margin-top: 8px;
+      background: #dce6f4;
+      border: 1px solid #9cb8d9;
+      font-size: 14px;
+      font-weight: bold;
+      justify-content: flex-start;
+    }
+    .acordeon-panel {
+      display: none;
+      padding: 15px;
+      background: #ffffff;
+      border: 1px solid #9cb8d9;
+      border-top: none;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .etiqueta-dic {
+      font-weight: bold;
+      color: #1e395b;
+      background: #e8f1fc;
+      padding: 2px 5px;
+      border-radius: 3px;
+    }
+    .ejemplo-bien { color: #006600; font-style: italic; }
+    .ejemplo-mal { color: #990000; text-decoration: line-through; margin-right: 10px;}
   </style>
 </head>
 <body>
@@ -315,11 +344,10 @@
         <button onclick="abrirModal('modalExportar')">📤 Exportar a PC</button>
         <span class="grupo-label">Gestión de Archivos</span>
       </div>
-      <!-- Modificado: Añadido soporte para pdf, doc, docx -->
       <input type="file" id="inputArchivoLocal" style="display: none;" accept=".txt,.html,.htm,.doc,.docx,.pdf" onchange="leerArchivoLocal(event)">
     </div>
 
-    <!-- PESTAÑA INICIO (NUEVAS FUNCIONES AÑADIDAS) -->
+    <!-- PESTAÑA INICIO -->
     <div id="tab-inicio" class="tab-content active">
       <div class="grupo-ribbon">
         <select id="fuente" onchange="cambiarFuente(this.value)">
@@ -334,14 +362,10 @@
         <button onclick="ejecutar('bold')" title="Negrita"><b>N</b></button>
         <button onclick="ejecutar('italic')" title="Cursiva"><i>K</i></button>
         <button onclick="ejecutar('underline')" title="Subrayado"><u>S</u></button>
-        
-        <!-- NUEVO: Botón para Color de Letra -->
         <input type="color" id="colorFuente" oninput="cambiarColorLetra(this.value)" title="Color de fuente" style="width: 25px; height: 22px; margin-left: 2px;">
-        
         <span class="grupo-label">Fuente</span>
       </div>
 
-      <!-- NUEVO: Grupo Párrafo (Alineación) -->
       <div class="grupo-ribbon">
         <button onclick="ejecutar('justifyLeft')" title="Alinear a la izquierda">⫷</button>
         <button onclick="ejecutar('justifyCenter')" title="Centrar">≡</button>
@@ -381,22 +405,22 @@
         <span class="grupo-label">Orientación</span>
       </div>
       <div class="grupo-ribbon">
-        <button onclick="crearNuevaHoja()">📑 Salto de página</button>
+        <button onclick="crearNuevaHojaManual()">📑 Salto de página</button>
         <span class="grupo-label">Páginas</span>
       </div>
     </div>
   </div>
 
-  <!-- ÁREA DE HOJAS -->
+  <!-- ÁREA DE TRABAJO -->
   <div class="workspace" id="workspace">
-    <div class="hoja" contenteditable="true" spellcheck="true" oninput="gestionarHojas(this)">
+    <div class="hoja" contenteditable="true" spellcheck="true" oninput="actualizarContador()">
       Comienza a escribir tu texto aquí...
     </div>
   </div>
 
   <!-- Barra de Estado -->
   <div class="status-bar">
-    <span id="infoPaginas">Página 1 de 1</span>
+    <span id="infoPaginas">Documento Continuo</span>
     <span id="contadorPalabras">Palabras: 0</span>
   </div>
 
@@ -468,7 +492,7 @@
   </div>
 
 
-  <!-- MODALES DE ASISTENCIA (Diccionario y Guías) -->
+  <!-- MODALES DE ASISTENCIA (Diccionario y Guías Restauradas) -->
   <div id="modalDiccionario" class="modal">
     <div class="modal-contenido">
       <div class="modal-header">
@@ -480,13 +504,71 @@
       <div id="resultadosDiccionario" style="margin-top:15px; padding:10px; background:#fff; border:1px solid #ccc;"><em>Resultados aquí...</em></div>
     </div>
   </div>
+  
   <div id="modalAyuda" class="modal">
     <div class="modal-contenido">
       <div class="modal-header">
-        <h3>💡 Guías</h3>
+        <h3>💡 Guía Maestra para Escritores</h3>
         <button onclick="cerrarModal('modalAyuda')" style="padding: 2px 8px; color: red;">X</button>
       </div>
-      <p><em>(Las guías y correcciones siguen activas internamente, mantenemos el código ligero en esta previsualización)</em></p>
+      
+      <!-- CONTENIDO DE GUÍAS RESTAURADO -->
+      <button class="acordeon-btn" onclick="toggleAcordeon('guiaErrores')">🛑 1. Errores Ortográficos Comunes</button>
+      <div id="guiaErrores" class="acordeon-panel">
+        <ul>
+          <li><strong>Ay / Hay / Ahí:</strong> 
+            <br><em>Ay:</em> Exclamación. <em>Hay:</em> Del verbo haber. <em>Ahí:</em> Lugar.
+            <br><span class="ejemplo-bien">Ejemplo: ¡Ay! Ahí hay una araña gigante.</span></li>
+          <hr style="border:0.5px solid #eee;">
+          <li><strong>A ver / Haber:</strong>
+            <br><em>A ver:</em> Mirar, observar. <em>Haber:</em> Verbo auxiliar.
+            <br><span class="ejemplo-bien">Ejemplo: Vamos a ver qué hay de cenar. Debe haber algo.</span></li>
+          <hr style="border:0.5px solid #eee;">
+          <li><strong>Sino / Si no:</strong>
+            <br><em>Sino:</em> Contraste o destino. <em>Si no:</em> Condicional negativo.
+            <br><span class="ejemplo-bien">Ejemplo: No fue Pedro, sino Juan. Si no vienes, me iré solo.</span></li>
+          <hr style="border:0.5px solid #eee;">
+          <li><strong>Hecho / Echo:</strong>
+            <br><em>Hecho:</em> Del verbo hacer. <em>Echo:</em> Del verbo echar (tirar, expulsar).
+            <br><span class="ejemplo-bien">Ejemplo: Ya he hecho la tarea. Siempre echo la basura a las ocho.</span></li>
+        </ul>
+      </div>
+
+      <button class="acordeon-btn" onclick="toggleAcordeon('guiaPuntuacion')">📝 2. Puntuación: La coma y los puntos</button>
+      <div id="guiaPuntuacion" class="acordeon-panel">
+        <p><strong class="etiqueta-dic">La "Coma Criminal":</strong> NUNCA debes separar el sujeto del predicado con una coma.</p>
+        <p><span class="ejemplo-mal">El soldado que regresó de la guerra, abrazó a su madre.</span><br>
+        <span class="ejemplo-bien">El soldado que regresó de la guerra abrazó a su madre.</span></p>
+        <p><strong class="etiqueta-dic">Puntos y signos (¿ ¡):</strong> Después de un signo de cierre (?), <strong>jamás se escribe un punto</strong>.</p>
+        <p><span class="ejemplo-mal">¿A qué hora llegas?. Te estoy esperando.</span><br>
+        <span class="ejemplo-bien">¿A qué hora llegas? Te estoy esperando.</span></p>
+      </div>
+
+      <button class="acordeon-btn" onclick="toggleAcordeon('guiaNarrativa')">📖 3. Regla de Oro: Muestra, no cuentes</button>
+      <div id="guiaNarrativa" class="acordeon-panel">
+        <p>En lugar de decirle al lector cómo se siente un personaje, descríbele las reacciones físicas.</p>
+        <p><strong>Contar:</strong> <span class="ejemplo-mal">María estaba muy nerviosa y asustada.</span></p>
+        <p><strong>Mostrar:</strong> <span class="ejemplo-bien">A María le temblaban las manos y mordió la tapa de su bolígrafo.</span></p>
+      </div>
+
+      <button class="acordeon-btn" onclick="toggleAcordeon('guiaDialogos')">💬 4. Reglas de Diálogos</button>
+      <div id="guiaDialogos" class="acordeon-panel">
+        <p>En español usamos la <strong>raya (—)</strong> (Alt + 0151), no el guion corto (-).</p>
+        <ul>
+          <li><strong>Verbos de dicción (dijo, respondió):</strong> Empieza en minúscula.<br>
+          <span class="ejemplo-bien">—¡No pienso ir! —gritó Carlos enfurecido.</span></li>
+          <li><strong>Verbos de acción (sonrió, miró):</strong> Empieza en mayúscula y se separa con un punto.<br>
+          <span class="ejemplo-bien">—Te estuve esperando. —Juan se cruzó de brazos.</span></li>
+        </ul>
+      </div>
+      
+      <button class="acordeon-btn" onclick="toggleAcordeon('guiaVozActiva')">💪 5. Voz Activa vs. Voz Pasiva</button>
+      <div id="guiaVozActiva" class="acordeon-panel">
+        <p>En español literario es preferible usar la <strong>Voz Activa</strong>. Le da fuerza a tu escritura.</p>
+        <p><strong>Voz Pasiva (Débil):</strong> <span class="ejemplo-mal">La carta fue leída por el rey.</span></p>
+        <p><strong>Voz Activa (Fuerte):</strong> <span class="ejemplo-bien">El rey leyó la carta.</span></p>
+      </div>
+
     </div>
   </div>
 
@@ -504,10 +586,15 @@
       menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
     }
 
-    // Comandos de formato (NUEVOS AÑADIDOS)
+    function toggleAcordeon(id) {
+      const panel = document.getElementById(id);
+      panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
+    }
+
+    // Comandos de formato
     function ejecutar(com, val = null) { 
       document.execCommand(com, false, val); 
-      document.querySelector('.hoja').focus(); // Mantiene el foco en la hoja tras hacer clic
+      document.querySelector('.hoja').focus(); 
     }
     
     function cambiarFuente(f) { document.execCommand('fontName', false, f); }
@@ -521,7 +608,6 @@
       range.surroundContents(span);
     }
 
-    // NUEVA FUNCIÓN: Color de Letra
     function cambiarColorLetra(colorHex) {
       document.execCommand('foreColor', false, colorHex);
       document.querySelector('.hoja').focus();
@@ -543,33 +629,17 @@
       });
     }
 
-    // Hojas Automáticas
-    function gestionarHojas(hojaActual) {
-      actualizarContador();
-      if (hojaActual.scrollHeight > hojaActual.clientHeight) {
-        let sig = hojaActual.nextElementSibling;
-        if (!sig || !sig.classList.contains('hoja')) {
-          crearNuevaHoja();
-        }
-      }
-      actualizarInfoPaginas();
-    }
-
-    function crearNuevaHoja() {
+    // Hojas Manuales (Si el usuario realmente quiere otra caja separada)
+    function crearNuevaHojaManual() {
       const ws = document.getElementById('workspace');
       const nueva = document.createElement('div');
       nueva.className = 'hoja';
       if (document.querySelector('.hoja').classList.contains('horizontal')) nueva.classList.add('horizontal');
       nueva.contentEditable = "true";
       nueva.spellcheck = true;
-      nueva.oninput = function() { gestionarHojas(this); };
+      nueva.oninput = function() { actualizarContador(); };
       ws.appendChild(nueva);
       nueva.focus();
-      actualizarInfoPaginas();
-    }
-
-    function actualizarInfoPaginas() {
-      document.getElementById('infoPaginas').innerText = `Páginas: ${document.querySelectorAll('.hoja').length}`;
     }
 
     function actualizarContador() {
@@ -583,7 +653,7 @@
     function abrirModal(id) { document.getElementById(id).style.display = 'flex'; }
     function cerrarModal(id) { document.getElementById(id).style.display = 'none'; }
 
-    // Exportar y Guardar (Igual que antes)
+    // Exportar y Guardar
     function ejecutarExportacion() {
       const nombre = document.getElementById('nombreExportar').value.trim() || 'DocumentoSinNombre';
       const formato = document.getElementById('formatoExportar').value;
@@ -629,14 +699,13 @@
 
     function abrirModalOpcionesAbrir() { abrirModal('modalAbrirOpciones'); }
 
-    // NUEVA LÓGICA DE ABRIR ARCHIVOS (TXT, HTML, DOCX, PDF)
+    // LÓGICA DE ABRIR ARCHIVOS
     function leerArchivoLocal(event) {
       const archivo = event.target.files[0];
       if (!archivo) return;
 
       const nombreExt = archivo.name.toLowerCase();
 
-      // Función auxiliar para preparar el lienzo en blanco
       const prepararLienzo = () => {
         const ws = document.getElementById('workspace');
         ws.innerHTML = ''; 
@@ -644,7 +713,7 @@
         nuevaHoja.className = 'hoja';
         nuevaHoja.contentEditable = "true";
         nuevaHoja.spellcheck = true;
-        nuevaHoja.oninput = function() { gestionarHojas(this); };
+        nuevaHoja.oninput = function() { actualizarContador(); };
         ws.appendChild(nuevaHoja);
         document.getElementById('tituloDocPrin').innerText = `${archivo.name} - Microsoft Word`;
         return nuevaHoja;
@@ -664,7 +733,6 @@
         reader.readAsText(archivo);
       } 
       else if (nombreExt.endsWith('.docx')) {
-        // Uso de Mammoth.js para leer Word
         const reader = new FileReader();
         reader.onload = function(e) {
           const arrayBuffer = e.target.result;
@@ -687,10 +755,9 @@
         alert("Formato no soportado para edición directa.");
       }
 
-      event.target.value = ''; // Resetear el input
+      event.target.value = ''; 
     }
 
-    // Funciones de Archivos internos
     function abrirModalListaInternos() {
       cerrarModal('modalAbrirOpciones');
       const contenedor = document.getElementById('contenedorListaArchivos');
@@ -720,7 +787,7 @@
       if (archivo) {
         document.getElementById('workspace').innerHTML = archivo.contenido;
         document.getElementById('tituloDocPrin').innerText = `${archivo.nombre} - Microsoft Word`;
-        document.querySelectorAll('.hoja').forEach(h => h.oninput = function() { gestionarHojas(this); });
+        document.querySelectorAll('.hoja').forEach(h => h.oninput = function() { actualizarContador(); });
         actualizarContador();
         cerrarModal('modalListaInternos');
       }
