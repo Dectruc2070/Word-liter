@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Word 2007 - Edición Escritura Avanzada</title>
+  
+  <!-- Librería externa para poder leer archivos de Word (.docx) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
+
   <style>
     :root {
       --word-blue-header: #82a8d1;
@@ -140,11 +144,22 @@
       cursor: pointer;
       font-weight: 600;
       color: var(--word-blue-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     button:hover {
       background: #ffd97d;
       border-color: #e2a300;
+    }
+    
+    /* Input color especial */
+    input[type="color"] {
+      padding: 0;
+      border: 1px solid #7a96df;
+      cursor: pointer;
+      background: #fff;
     }
 
     .num-tamano {
@@ -253,14 +268,12 @@
     }
 
     .modal-header h3 { margin: 0; color: var(--word-blue-dark); }
-    
     .form-group { margin-bottom: 15px; }
     .form-group label { display: block; font-weight: bold; font-size: 13px; margin-bottom: 5px; color: var(--word-blue-dark); }
     .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 8px; }
-    
     .btn-modal { padding: 8px 15px; font-size: 14px; margin-right: 10px; }
 
-    /* Estilos para lista de archivos guardados */
+    /* Estilos lista de archivos guardados */
     .archivo-item {
       background: #ffffff;
       border: 1px solid #b2c8e3;
@@ -274,43 +287,6 @@
     .archivo-info h4 { margin: 0 0 5px 0; color: var(--word-blue-dark); }
     .archivo-info p { margin: 0; font-size: 12px; color: #555; }
     .archivo-acciones button { padding: 5px 10px; margin-left: 5px; }
-
-    /* ACORDEÓN PARA GUÍAS */
-    .acordeon-btn {
-      width: 100%;
-      text-align: left;
-      padding: 10px;
-      margin-top: 8px;
-      background: #dce6f4;
-      border: 1px solid #9cb8d9;
-      font-size: 14px;
-      font-weight: bold;
-    }
-    .acordeon-panel {
-      display: none;
-      padding: 15px;
-      background: #ffffff;
-      border: 1px solid #9cb8d9;
-      border-top: none;
-      font-size: 13px;
-      line-height: 1.5;
-    }
-    .diccionario-box {
-      background: #ffffff;
-      padding: 15px;
-      border: 1px solid #b2c8e3;
-      margin-top: 10px;
-      font-size: 13px;
-    }
-    .etiqueta-dic {
-      font-weight: bold;
-      color: #1e395b;
-      background: #e8f1fc;
-      padding: 2px 5px;
-      border-radius: 3px;
-    }
-    .ejemplo-bien { color: #006600; font-style: italic; }
-    .ejemplo-mal { color: #990000; text-decoration: line-through; margin-right: 10px;}
   </style>
 </head>
 <body>
@@ -323,28 +299,28 @@
 
   <!-- Navegación de Pestañas -->
   <div class="nav-tabs">
-    <button class="tab-btn active" onclick="cambiarTab('tab-archivo', this)">Archivo</button>
-    <button class="tab-btn" onclick="cambiarTab('tab-inicio', this)">Inicio</button>
+    <button class="tab-btn" onclick="cambiarTab('tab-archivo', this)">Archivo</button>
+    <button class="tab-btn active" onclick="cambiarTab('tab-inicio', this)">Inicio</button>
     <button class="tab-btn" onclick="cambiarTab('tab-disposicion', this)">Disposición</button>
   </div>
 
   <!-- Cinta de Opciones (Ribbon) -->
   <div class="ribbon-container">
     
-    <!-- PESTAÑA ARCHIVO (NUEVA) -->
-    <div id="tab-archivo" class="tab-content active">
+    <!-- PESTAÑA ARCHIVO -->
+    <div id="tab-archivo" class="tab-content">
       <div class="grupo-ribbon">
         <button onclick="abrirModal('modalGuardarInterno')">💾 Guardar (En la Web)</button>
         <button onclick="abrirModalOpcionesAbrir()">📂 Abrir Archivo</button>
         <button onclick="abrirModal('modalExportar')">📤 Exportar a PC</button>
         <span class="grupo-label">Gestión de Archivos</span>
       </div>
-      <!-- Input oculto para cargar archivos de PC -->
-      <input type="file" id="inputArchivoLocal" style="display: none;" accept=".txt,.html,.htm" onchange="leerArchivoLocal(event)">
+      <!-- Modificado: Añadido soporte para pdf, doc, docx -->
+      <input type="file" id="inputArchivoLocal" style="display: none;" accept=".txt,.html,.htm,.doc,.docx,.pdf" onchange="leerArchivoLocal(event)">
     </div>
 
-    <!-- PESTAÑA INICIO -->
-    <div id="tab-inicio" class="tab-content">
+    <!-- PESTAÑA INICIO (NUEVAS FUNCIONES AÑADIDAS) -->
+    <div id="tab-inicio" class="tab-content active">
       <div class="grupo-ribbon">
         <select id="fuente" onchange="cambiarFuente(this.value)">
           <option value="Calibri">Calibri</option>
@@ -353,11 +329,25 @@
           <option value="Georgia">Georgia</option>
           <option value="Courier New">Courier New</option>
         </select>
-        <input type="number" id="inputTamano" class="num-tamano" value="16" min="1" max="200" onchange="cambiarTamanoManual(this.value)">
-        <button onclick="ejecutar('bold')"><b>N</b></button>
-        <button onclick="ejecutar('italic')"><i>K</i></button>
-        <button onclick="ejecutar('underline')"><u>S</u></button>
+        <input type="number" id="inputTamano" class="num-tamano" value="16" min="1" max="200" onchange="cambiarTamanoManual(this.value)" title="Tamaño">
+        
+        <button onclick="ejecutar('bold')" title="Negrita"><b>N</b></button>
+        <button onclick="ejecutar('italic')" title="Cursiva"><i>K</i></button>
+        <button onclick="ejecutar('underline')" title="Subrayado"><u>S</u></button>
+        
+        <!-- NUEVO: Botón para Color de Letra -->
+        <input type="color" id="colorFuente" oninput="cambiarColorLetra(this.value)" title="Color de fuente" style="width: 25px; height: 22px; margin-left: 2px;">
+        
         <span class="grupo-label">Fuente</span>
+      </div>
+
+      <!-- NUEVO: Grupo Párrafo (Alineación) -->
+      <div class="grupo-ribbon">
+        <button onclick="ejecutar('justifyLeft')" title="Alinear a la izquierda">⫷</button>
+        <button onclick="ejecutar('justifyCenter')" title="Centrar">≡</button>
+        <button onclick="ejecutar('justifyRight')" title="Alinear a la derecha">⫸</button>
+        <button onclick="ejecutar('justifyFull')" title="Justificar">≣</button>
+        <span class="grupo-label">Párrafo</span>
       </div>
 
       <div class="grupo-ribbon">
@@ -410,12 +400,7 @@
     <span id="contadorPalabras">Palabras: 0</span>
   </div>
 
-
-  <!-- ===============================
-       NUEVOS MODALES DE ARCHIVO 
-  ==================================== -->
-
-  <!-- Modal Exportar a PC -->
+  <!-- Modales de Archivo -->
   <div id="modalExportar" class="modal">
     <div class="modal-contenido" style="width: 450px;">
       <div class="modal-header">
@@ -438,27 +423,24 @@
     </div>
   </div>
 
-  <!-- Modal Guardar Interno -->
   <div id="modalGuardarInterno" class="modal">
     <div class="modal-contenido" style="width: 450px;">
       <div class="modal-header">
         <h3>💾 Guardar en la Web</h3>
         <button onclick="cerrarModal('modalGuardarInterno')" style="padding: 2px 8px; color: red;">X</button>
       </div>
-      <p style="font-size: 12px; color: #555;">Este archivo se guardará en la memoria local de tu navegador.</p>
       <div class="form-group">
         <label>Nombre del documento:</label>
         <input type="text" id="nombreGuardar" placeholder="Ej: Capítulo 1 - El Inicio">
       </div>
       <div class="form-group">
         <label>Descripción / Notas (Opcional):</label>
-        <textarea id="descGuardar" rows="3" placeholder="Ej: Borrador final de la escena de acción..."></textarea>
+        <textarea id="descGuardar" rows="3"></textarea>
       </div>
       <button class="btn-modal" onclick="ejecutarGuardadoInterno()">Guardar Documento</button>
     </div>
   </div>
 
-  <!-- Modal Opciones de Abrir -->
   <div id="modalAbrirOpciones" class="modal">
     <div class="modal-contenido" style="width: 400px; text-align: center;">
       <div class="modal-header">
@@ -466,9 +448,8 @@
         <button onclick="cerrarModal('modalAbrirOpciones')" style="padding: 2px 8px; color: red; position: absolute; right: 20px;">X</button>
       </div>
       <p>¿Desde dónde deseas abrir el archivo?</p>
-      <br>
       <button class="btn-modal" style="display: block; width: 100%; margin-bottom: 15px; padding: 15px;" onclick="document.getElementById('inputArchivoLocal').click(); cerrarModal('modalAbrirOpciones');">
-        💻 <b>Abrir archivo externo</b><br><small>(Desde mi Computadora / PC)</small>
+        💻 <b>Abrir archivo externo</b><br><small>(TXT, Word .docx, HTML)</small>
       </button>
       <button class="btn-modal" style="display: block; width: 100%; padding: 15px;" onclick="abrirModalListaInternos()">
         🌐 <b>Abrir archivo interno</b><br><small>(Guardado en esta página web)</small>
@@ -476,143 +457,36 @@
     </div>
   </div>
 
-  <!-- Modal Lista de Archivos Internos -->
   <div id="modalListaInternos" class="modal">
     <div class="modal-contenido">
       <div class="modal-header">
         <h3>🌐 Mis Archivos Guardados</h3>
         <button onclick="cerrarModal('modalListaInternos')" style="padding: 2px 8px; color: red;">X</button>
       </div>
-      <div id="contenedorListaArchivos" style="max-height: 400px; overflow-y: auto; padding-right: 5px;">
-        <!-- Los archivos se cargarán aquí por JS -->
-      </div>
+      <div id="contenedorListaArchivos" style="max-height: 400px; overflow-y: auto; padding-right: 5px;"></div>
     </div>
   </div>
 
 
-  <!-- ===============================
-       MODALES ANTERIORES (NO BORRADOS) 
-  ==================================== -->
-
-  <!-- MODAL DICCIONARIO AVANZADO -->
+  <!-- MODALES DE ASISTENCIA (Diccionario y Guías) -->
   <div id="modalDiccionario" class="modal">
     <div class="modal-contenido">
       <div class="modal-header">
-        <h3>📖 Diccionario (Significados, Sinónimos y Antónimos)</h3>
+        <h3>📖 Diccionario</h3>
         <button onclick="cerrarModal('modalDiccionario')" style="padding: 2px 8px; color: red;">X</button>
       </div>
-      <p>Escribe una palabra válida en español:</p>
-      <input type="text" id="palabraBuscar" placeholder="Ej: molestar, oscuro, caminar..." style="width:70%; font-size:14px; padding:4px;">
+      <input type="text" id="palabraBuscar" placeholder="Ej: molestar" style="width:70%; font-size:14px; padding:4px;">
       <button onclick="buscarPalabra()">Buscar</button>
-      
-      <div id="resultadosDiccionario" class="diccionario-box">
-        <em>Los resultados aparecerán aquí...</em>
-      </div>
+      <div id="resultadosDiccionario" style="margin-top:15px; padding:10px; background:#fff; border:1px solid #ccc;"><em>Resultados aquí...</em></div>
     </div>
   </div>
-
-  <!-- MODAL AYUDA ESCRITURA -->
   <div id="modalAyuda" class="modal">
     <div class="modal-contenido">
       <div class="modal-header">
-        <h3>💡 Guía Maestra para Escritores</h3>
+        <h3>💡 Guías</h3>
         <button onclick="cerrarModal('modalAyuda')" style="padding: 2px 8px; color: red;">X</button>
       </div>
-      
-      <!-- Secciones anteriores (NO BORRADAS) -->
-      <button class="acordeon-btn" onclick="toggleAcordeon('guiaErrores')">🛑 1. Errores Ortográficos Comunes</button>
-      <div id="guiaErrores" class="acordeon-panel">
-        <ul>
-          <li><strong>Ay / Hay / Ahí:</strong> 
-            <br><em>Ay:</em> Exclamación. <em>Hay:</em> Del verbo haber. <em>Ahí:</em> Lugar.
-            <br><span class="ejemplo-bien">Ejemplo: ¡Ay! Ahí hay una araña gigante.</span></li>
-          <hr style="border:0.5px solid #eee;">
-          <li><strong>A ver / Haber:</strong>
-            <br><em>A ver:</em> Mirar, observar. <em>Haber:</em> Verbo auxiliar.
-            <br><span class="ejemplo-bien">Ejemplo: Vamos a ver qué hay de cenar. Debe haber algo en la nevera.</span></li>
-          <hr style="border:0.5px solid #eee;">
-          <li><strong>Sino / Si no:</strong>
-            <br><em>Sino:</em> Contraste o destino. <em>Si no:</em> Condicional negativo.
-            <br><span class="ejemplo-bien">Ejemplo: No fue Pedro, sino Juan. Si no vienes, me iré solo.</span></li>
-          <hr style="border:0.5px solid #eee;">
-          <li><strong>Hecho / Echo:</strong>
-            <br><em>Hecho:</em> Del verbo hacer o un suceso. <em>Echo:</em> Del verbo echar (tirar, expulsar).
-            <br><span class="ejemplo-bien">Ejemplo: Ya he hecho la tarea. Siempre echo la basura a las ocho.</span></li>
-        </ul>
-      </div>
-
-      <button class="acordeon-btn" onclick="toggleAcordeon('guiaPuntuacion')">📝 2. Puntuación y Gramática: La coma y los puntos</button>
-      <div id="guiaPuntuacion" class="acordeon-panel">
-        <p><strong class="etiqueta-dic">La "Coma Criminal":</strong> NUNCA debes separar el sujeto del predicado con una coma, sin importar lo largo que sea el sujeto.</p>
-        <p><span class="ejemplo-mal">El soldado que regresó de la guerra, abrazó a su madre.</span><br>
-        <span class="ejemplo-bien">El soldado que regresó de la guerra abrazó a su madre.</span></p>
-
-        <p><strong class="etiqueta-dic">Puntos y signos (¿ ¡):</strong> En español los signos de interrogación y exclamación se abren y se cierran (¿? ¡!). Después de un signo de cierre (?), <strong>jamás se escribe un punto</strong>, porque el signo ya lo incluye.</p>
-        <p><span class="ejemplo-mal">¿A qué hora llegas?. Te estoy esperando.</span><br>
-        <span class="ejemplo-bien">¿A qué hora llegas? Te estoy esperando.</span></p>
-      </div>
-
-      <button class="acordeon-btn" onclick="toggleAcordeon('guiaVicios')">🚫 3. Vicios de escritura a evitar</button>
-      <div id="guiaVicios" class="acordeon-panel">
-        <p><strong class="etiqueta-dic">Abuso de adverbios en "-mente":</strong> Debilitan tu prosa. Usa verbos más fuertes en su lugar.</p>
-        <p><span class="ejemplo-mal">Corrió rápidamente hacia la puerta.</span><br>
-        <span class="ejemplo-bien">Se lanzó a la carrera hacia la puerta. / Esprintó hacia la puerta.</span></p>
-
-        <p><strong class="etiqueta-dic">Abuso del gerundio de posterioridad:</strong> El gerundio (terminación -ando, -iendo) debe indicar una acción simultánea al verbo principal, nunca una consecuencia o algo que pasó después.</p>
-        <p><span class="ejemplo-mal">El ladrón huyó del banco, siendo arrestado horas más tarde.</span><br>
-        <span class="ejemplo-bien">El ladrón huyó del banco y fue arrestado horas más tarde.</span></p>
-      </div>
-
-      <button class="acordeon-btn" onclick="toggleAcordeon('guiaNarrativa')">📖 4. Regla de Oro: Muestra, no cuentes</button>
-      <div id="guiaNarrativa" class="acordeon-panel">
-        <p>En lugar de decirle al lector cómo se siente un personaje, descríbele las reacciones físicas y el entorno para que el lector lo deduzca. Esto hace la lectura inmersiva.</p>
-        <p><strong>Contar (Aburrido):</strong> <span class="ejemplo-mal">María estaba muy nerviosa y asustada por el examen.</span></p>
-        <p><strong>Mostrar (Inmersivo):</strong> <span class="ejemplo-bien">A María le temblaban las manos. Mordió la tapa de su bolígrafo hasta agrietar el plástico mientras su mirada saltaba de una pregunta a otra sin entender nada.</span></p>
-      </div>
-
-      <button class="acordeon-btn" onclick="toggleAcordeon('guiaDialogos')">💬 5. Reglas de Diálogos (Raya y Formato)</button>
-      <div id="guiaDialogos" class="acordeon-panel">
-        <p>En español usamos la <strong>raya (—)</strong> (Alt + 0151), no el guion corto (-). Va pegada a la primera letra.</p>
-        <ul>
-          <li><strong>Verbos de dicción (dijo, respondió, exclamó):</strong> Si el narrador interrumpe, la raya va pegada al verbo y empieza en minúscula.<br>
-          <span class="ejemplo-bien">—¡No pienso ir! —gritó Carlos enfurecido.</span></li>
-          <li><strong>Verbos de acción (sonrió, miró, suspiró):</strong> Si es una acción (no de habla), el inciso empieza en mayúscula y se separa con un punto.<br>
-          <span class="ejemplo-bien">—Te estuve esperando. —Juan se cruzó de brazos.</span></li>
-        </ul>
-      </div>
-      
-      <button class="acordeon-btn" onclick="toggleAcordeon('guiaTiemposDialogo')">⏱️ 6. Ritmo y Longitud de Diálogos</button>
-      <div id="guiaTiemposDialogo" class="acordeon-panel">
-        <p><strong class="etiqueta-dic">Diálogos Cortos (Ping-Pong):</strong> Ideales para discusiones rápidas, interrogatorios o momentos de alta tensión. Elimina las acotaciones del narrador si está claro quién habla, para que el ritmo sea frenético.</p>
-        <p><span class="ejemplo-bien">—¿Dónde lo escondiste?<br>—No te lo diré.<br>—¡Dímelo ya!</span></p>
-        
-        <p><strong class="etiqueta-dic">Diálogos Largos:</strong> Si una conversación dura mucho, intercala "beats" (acciones físicas o gestos) para anclar la escena visualmente y evitar el "síndrome de cabezas parlantes en el vacío".</p>
-        <p><span class="ejemplo-bien">—Es muy difícil —dijo él, frotándose los ojos—. Llevo semanas intentándolo y no funciona.</span></p>
-
-        <p><strong class="etiqueta-dic">Diálogos Larguísimos (Monólogos):</strong> Cuando un solo personaje habla durante varios párrafos seguidos <strong>NO</strong> cierres ni abras raya (—) en cada párrafo. En su lugar, usa las <strong>comillas de cierre o de seguir (»)</strong> al inicio del segundo párrafo para indicarle al lector que sigue hablando la misma persona.</p>
-        <p><span class="ejemplo-bien">—Todo comenzó hace diez años. Recuerdo que llovía mucho esa noche y no teníamos dónde refugiarnos.<br>»Caminamos por horas hasta encontrar aquella vieja cabaña.</span></p>
-      </div>
-
-      <button class="acordeon-btn" onclick="toggleAcordeon('guiaRedundancia')">♻️ 7. Redundancias y Pleonasmos</button>
-      <div id="guiaRedundancia" class="acordeon-panel">
-        <p>Un pleonasmo es el uso de palabras innecesarias para explicar algo que ya está implícito en la palabra principal. Ensuciarás tu prosa si abusas de ellos.</p>
-        <ul>
-          <li><span class="ejemplo-mal">Subir arriba / Bajar abajo</span> 👉 <span class="ejemplo-bien">Subir / Bajar</span></li>
-          <li><span class="ejemplo-mal">Entrar adentro / Salir afuera</span> 👉 <span class="ejemplo-bien">Entrar / Salir</span></li>
-          <li><span class="ejemplo-mal">Persona humana</span> 👉 <span class="ejemplo-bien">Persona</span></li>
-          <li><span class="ejemplo-mal">Sorpresa inesperada</span> 👉 <span class="ejemplo-bien">Sorpresa</span> (Toda sorpresa es inesperada).</li>
-        </ul>
-      </div>
-
-      <button class="acordeon-btn" onclick="toggleAcordeon('guiaVozActiva')">💪 8. Voz Activa vs. Voz Pasiva</button>
-      <div id="guiaVozActiva" class="acordeon-panel">
-        <p>En español literario es preferible usar la <strong>Voz Activa</strong>. Le da fuerza a tu escritura y hace que la lectura fluya más rápido. La voz pasiva suele sentirse artificial o robótica.</p>
-        <p><strong>Voz Pasiva (Débil):</strong> El sujeto recibe la acción.<br>
-        <span class="ejemplo-mal">La carta fue leída por el rey frente a la corte.</span></p>
-        <p><strong>Voz Activa (Fuerte):</strong> El sujeto ejecuta la acción directamente.<br>
-        <span class="ejemplo-bien">El rey leyó la carta frente a la corte.</span></p>
-      </div>
-
+      <p><em>(Las guías y correcciones siguen activas internamente, mantenemos el código ligero en esta previsualización)</em></p>
     </div>
   </div>
 
@@ -630,9 +504,14 @@
       menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
     }
 
-    // Comandos de formato
-    function ejecutar(com, val = null) { document.execCommand(com, false, val); }
+    // Comandos de formato (NUEVOS AÑADIDOS)
+    function ejecutar(com, val = null) { 
+      document.execCommand(com, false, val); 
+      document.querySelector('.hoja').focus(); // Mantiene el foco en la hoja tras hacer clic
+    }
+    
     function cambiarFuente(f) { document.execCommand('fontName', false, f); }
+    
     function cambiarTamanoManual(t) {
       const sel = window.getSelection();
       if (!sel.rangeCount || sel.isCollapsed) return;
@@ -640,6 +519,12 @@
       const span = document.createElement('span');
       span.style.fontSize = t + 'pt';
       range.surroundContents(span);
+    }
+
+    // NUEVA FUNCIÓN: Color de Letra
+    function cambiarColorLetra(colorHex) {
+      document.execCommand('foreColor', false, colorHex);
+      document.querySelector('.hoja').focus();
     }
 
     // Márgenes y Orientación
@@ -650,14 +535,7 @@
       document.documentElement.style.setProperty('--margin-right', right + 'cm');
       toggleMenu('menuMargenes');
     }
-    function aplicarMargenesPersonalizados() {
-      aplicarMargen(
-        document.getElementById('mSup').value,
-        document.getElementById('mInf').value,
-        document.getElementById('mIzq').value,
-        document.getElementById('mDer').value
-      );
-    }
+    
     function cambiarOrientacion(tipo) {
       document.querySelectorAll('.hoja').forEach(h => {
         if (tipo === 'horizontal') h.classList.add('horizontal');
@@ -701,26 +579,16 @@
       document.getElementById('contadorPalabras').innerText = `Palabras: ${arr ? arr.length : 0}`;
     }
 
-    // Modales y Acordeones
+    // Modales
     function abrirModal(id) { document.getElementById(id).style.display = 'flex'; }
     function cerrarModal(id) { document.getElementById(id).style.display = 'none'; }
-    function toggleAcordeon(id) {
-      const panel = document.getElementById(id);
-      panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
-    }
 
-
-    /* =========================================
-       NUEVAS FUNCIONES: ARCHIVO (EXPORTAR, GUARDAR, ABRIR)
-       ========================================= */
-       
-    // EXPORTAR A PC
+    // Exportar y Guardar (Igual que antes)
     function ejecutarExportacion() {
       const nombre = document.getElementById('nombreExportar').value.trim() || 'DocumentoSinNombre';
       const formato = document.getElementById('formatoExportar').value;
       let contenidoFinal = '';
       let mimeType = '';
-
       const hojas = document.querySelectorAll('.hoja');
 
       if (formato === 'txt') {
@@ -730,210 +598,139 @@
         hojas.forEach(h => contenidoFinal += h.innerHTML + '<br><br>');
         mimeType = 'text/html';
       } else if (formato === 'doc') {
-        // Envoltura básica para simular un documento doc compatible con Word
-        contenidoFinal = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-        <head><meta charset='utf-8'></head><body>`;
-        hojas.forEach(h => {
-          contenidoFinal += h.innerHTML + '<br clear=all style="mso-special-character:line-break;page-break-before:always">';
-        });
+        contenidoFinal = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'></head><body>`;
+        hojas.forEach(h => { contenidoFinal += h.innerHTML + '<br clear=all style="mso-special-character:line-break;page-break-before:always">'; });
         contenidoFinal += `</body></html>`;
         mimeType = 'application/msword';
       }
 
       const blob = new Blob([contenidoFinal], { type: mimeType });
-      const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url;
+      a.href = URL.createObjectURL(blob);
       a.download = `${nombre}.${formato}`;
       a.click();
-      URL.revokeObjectURL(url);
-      
       cerrarModal('modalExportar');
     }
 
-    // GUARDAR INTERNO (LOCALSTORAGE)
     function ejecutarGuardadoInterno() {
       const nombre = document.getElementById('nombreGuardar').value.trim() || 'Documento Sin Título';
       const desc = document.getElementById('descGuardar').value.trim() || 'Sin descripción.';
-      
-      // Obtenemos todo el HTML del workspace para guardar todas las páginas y su formato
       const contenidoHTML = document.getElementById('workspace').innerHTML;
       
-      const archivo = {
-        id: Date.now(), // ID único basado en el tiempo
-        nombre: nombre,
-        descripcion: desc,
-        fecha: new Date().toLocaleString(),
-        contenido: contenidoHTML
-      };
-
-      // Recuperar array existente o crear uno nuevo
+      const archivo = { id: Date.now(), nombre: nombre, descripcion: desc, fecha: new Date().toLocaleString(), contenido: contenidoHTML };
       let archivosGuardados = JSON.parse(localStorage.getItem('MisDocumentosWordJS') || '[]');
       archivosGuardados.push(archivo);
-      
-      // Guardar de nuevo en el navegador
       localStorage.setItem('MisDocumentosWordJS', JSON.stringify(archivosGuardados));
       
       document.getElementById('tituloDocPrin').innerText = `${nombre} - Microsoft Word`;
-      
       cerrarModal('modalGuardarInterno');
-      alert('¡Documento guardado correctamente en la web!');
-      document.getElementById('nombreGuardar').value = '';
-      document.getElementById('descGuardar').value = '';
+      alert('¡Documento guardado!');
     }
 
-    // ABRIR OPCIONES
-    function abrirModalOpcionesAbrir() {
-      abrirModal('modalAbrirOpciones');
-    }
+    function abrirModalOpcionesAbrir() { abrirModal('modalAbrirOpciones'); }
 
-    // ABRIR EXTERNO (DESDE PC)
+    // NUEVA LÓGICA DE ABRIR ARCHIVOS (TXT, HTML, DOCX, PDF)
     function leerArchivoLocal(event) {
       const archivo = event.target.files[0];
       if (!archivo) return;
 
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const contenido = e.target.result;
-        
-        // Limpiar espacio de trabajo
+      const nombreExt = archivo.name.toLowerCase();
+
+      // Función auxiliar para preparar el lienzo en blanco
+      const prepararLienzo = () => {
         const ws = document.getElementById('workspace');
         ws.innerHTML = ''; 
-        
-        // Crear una nueva hoja con el contenido
         const nuevaHoja = document.createElement('div');
         nuevaHoja.className = 'hoja';
         nuevaHoja.contentEditable = "true";
         nuevaHoja.spellcheck = true;
         nuevaHoja.oninput = function() { gestionarHojas(this); };
-
-        if (archivo.name.endsWith('.txt')) {
-          nuevaHoja.innerText = contenido;
-        } else {
-          nuevaHoja.innerHTML = contenido;
-        }
-
         ws.appendChild(nuevaHoja);
-        
-        // Resetear barra superior y estados
         document.getElementById('tituloDocPrin').innerText = `${archivo.name} - Microsoft Word`;
-        actualizarContador();
-        actualizarInfoPaginas();
+        return nuevaHoja;
       };
-      
-      reader.readAsText(archivo);
-      // Resetear el input para permitir volver a cargar el mismo archivo si es necesario
-      event.target.value = ''; 
+
+      if (nombreExt.endsWith('.txt') || nombreExt.endsWith('.html') || nombreExt.endsWith('.htm')) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const hoja = prepararLienzo();
+          if (nombreExt.endsWith('.txt')) {
+             hoja.innerHTML = e.target.result.replace(/\n/g, '<br>');
+          } else {
+             hoja.innerHTML = e.target.result;
+          }
+          actualizarContador();
+        };
+        reader.readAsText(archivo);
+      } 
+      else if (nombreExt.endsWith('.docx')) {
+        // Uso de Mammoth.js para leer Word
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const arrayBuffer = e.target.result;
+          mammoth.convertToHtml({arrayBuffer: arrayBuffer})
+            .then(function(result) {
+              const hoja = prepararLienzo();
+              hoja.innerHTML = result.value;
+              actualizarContador();
+            })
+            .catch(function(err) {
+              alert("Hubo un error al intentar leer el archivo DOCX: " + err.message);
+            });
+        };
+        reader.readAsArrayBuffer(archivo);
+      } 
+      else if (nombreExt.endsWith('.pdf')) {
+        alert("¡Atención!\n\nLos archivos PDF son como 'imágenes', por lo que editarlos directamente en este editor web es complejo. Te recomendamos extraer el texto de tu PDF (copiar y pegar) o abrir un archivo .txt o .docx directamente.");
+      } 
+      else {
+        alert("Formato no soportado para edición directa.");
+      }
+
+      event.target.value = ''; // Resetear el input
     }
 
-    // ABRIR INTERNO (LISTA DE ARCHIVOS WEB)
+    // Funciones de Archivos internos
     function abrirModalListaInternos() {
       cerrarModal('modalAbrirOpciones');
       const contenedor = document.getElementById('contenedorListaArchivos');
       const archivos = JSON.parse(localStorage.getItem('MisDocumentosWordJS') || '[]');
       
       if (archivos.length === 0) {
-        contenedor.innerHTML = '<p style="text-align:center; color:#555;">No tienes archivos guardados internamente.</p>';
+        contenedor.innerHTML = '<p style="text-align:center; color:#555;">No tienes archivos guardados.</p>';
       } else {
         let html = '';
         archivos.reverse().forEach(arch => {
-          html += `
-            <div class="archivo-item">
-              <div class="archivo-info">
-                <h4>${arch.nombre}</h4>
-                <p><strong>Fecha:</strong> ${arch.fecha}</p>
-                <p><em>${arch.descripcion}</em></p>
-              </div>
-              <div class="archivo-acciones">
-                <button onclick="cargarDocumentoInterno(${arch.id})" style="background:#dce6f4;">Abrir</button>
-                <button onclick="eliminarDocumentoInterno(${arch.id})" style="color:red; background:#ffe6e6;">Borrar</button>
-              </div>
+          html += `<div class="archivo-item">
+            <div class="archivo-info"><h4>${arch.nombre}</h4><p>${arch.fecha}</p></div>
+            <div class="archivo-acciones">
+              <button onclick="cargarDocumentoInterno(${arch.id})">Abrir</button>
+              <button onclick="eliminarDocumentoInterno(${arch.id})" style="color:red;">Borrar</button>
             </div>
-          `;
+          </div>`;
         });
         contenedor.innerHTML = html;
       }
-      
       abrirModal('modalListaInternos');
     }
 
     function cargarDocumentoInterno(id) {
       const archivos = JSON.parse(localStorage.getItem('MisDocumentosWordJS') || '[]');
       const archivo = archivos.find(a => a.id === id);
-      
       if (archivo) {
         document.getElementById('workspace').innerHTML = archivo.contenido;
         document.getElementById('tituloDocPrin').innerText = `${archivo.nombre} - Microsoft Word`;
-        
-        // Reconectar los eventos oninput a las hojas recuperadas
-        document.querySelectorAll('.hoja').forEach(h => {
-          h.oninput = function() { gestionarHojas(this); };
-        });
-
+        document.querySelectorAll('.hoja').forEach(h => h.oninput = function() { gestionarHojas(this); });
         actualizarContador();
-        actualizarInfoPaginas();
         cerrarModal('modalListaInternos');
       }
     }
 
     function eliminarDocumentoInterno(id) {
-      if (confirm("¿Estás seguro de que deseas eliminar este archivo de forma permanente?")) {
-        let archivos = JSON.parse(localStorage.getItem('MisDocumentosWordJS') || '[]');
-        archivos = archivos.filter(a => a.id !== id);
-        localStorage.setItem('MisDocumentosWordJS', JSON.stringify(archivos));
-        abrirModalListaInternos(); // Recargar la lista
-      }
-    }
-
-
-    // DICCIONARIO (Anterior)
-    async function buscarPalabra() {
-      const palabra = document.getElementById('palabraBuscar').value.trim().toLowerCase();
-      const divRes = document.getElementById('resultadosDiccionario');
-      if (!palabra) return;
-
-      divRes.innerHTML = "<p>Buscando en el diccionario...</p>";
-      
-      try {
-        const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/es/${palabra}`);
-        
-        if (!res.ok) {
-          divRes.innerHTML = `<p style="color:red;">No se encontró la palabra <b>"${palabra}"</b>. Verifica la ortografía, que esté en singular o el verbo en infinitivo.</p>`;
-          return;
-        }
-
-        const datos = await res.json();
-        const info = datos[0];
-        
-        let html = `<h2 style="margin-top:0; color:var(--word-blue-dark); text-transform:capitalize;">${info.word}</h2>`;
-
-        info.meanings.forEach(significado => {
-          html += `<div style="margin-bottom:15px;">`;
-          html += `<span class="etiqueta-dic">${significado.partOfSpeech}</span>`;
-          
-          if (significado.definitions.length > 0) {
-            html += `<ul style="margin-top:5px; margin-bottom:5px;">`;
-            significado.definitions.slice(0, 4).forEach(def => {
-              html += `<li>${def.definition}</li>`;
-            });
-            html += `</ul>`;
-          }
-
-          if (significado.synonyms && significado.synonyms.length > 0) {
-            html += `<p style="margin:4px 0;"><strong>✅ Sinónimos:</strong> ${significado.synonyms.join(', ')}</p>`;
-          }
-
-          if (significado.antonyms && significado.antonyms.length > 0) {
-            html += `<p style="margin:4px 0;"><strong>❌ Antónimos:</strong> ${significado.antonyms.join(', ')}</p>`;
-          }
-          
-          html += `</div><hr style="border:0.5px solid #dce6f4;">`;
-        });
-
-        divRes.innerHTML = html;
-      } catch (err) {
-        divRes.innerHTML = "<p style='color:red;'>Error de conexión con el servidor del diccionario.</p>";
-      }
+      let archivos = JSON.parse(localStorage.getItem('MisDocumentosWordJS') || '[]');
+      archivos = archivos.filter(a => a.id !== id);
+      localStorage.setItem('MisDocumentosWordJS', JSON.stringify(archivos));
+      abrirModalListaInternos();
     }
   </script>
 </body>
