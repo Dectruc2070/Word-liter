@@ -208,7 +208,7 @@
         <button onclick="cerrarModal('modalAyuda')" style="padding: 2px 8px; color: red;">X</button>
       </div>
       
-      <!-- Contenedor con scroll para que la ventana no se salga de la pantalla -->
+      <!-- Contenedor con scroll -->
       <div style="max-height: 65vh; overflow-y: auto; padding-right: 10px;">
         
         <button class="acordeon-btn" onclick="toggleAcordeon('guiaErrores')">🛑 1. Errores Ortográficos Comunes</button>
@@ -256,43 +256,82 @@
           </ul>
         </div>
 
-        <button class="acordeon-btn" onclick="toggleAcordeon('guiaDialogos')">💬 4. Diálogos y Longitud (Cortos a Largos)</button>
+        <button class="acordeon-btn" onclick="toggleAcordeon('guiaDialogos')">💬 4. Diálogos y Longitud</button>
         <div id="guiaDialogos" class="acordeon-panel">
-          <p>Usa la <strong>raya (—)</strong> (Alt + 0151), no el guion (-). Fíjate cómo manejar diferentes extensiones:</p>
-          
+          <p>Usa la <strong>raya (—)</strong> (Alt + 0151), no el guion (-).</p>
           <p><strong class="etiqueta-dic">A. Diálogos Cortos (Dinámicos y de Acción):</strong><br>
-          Úsalos en discusiones, peleas o tensión. Si queda claro quién habla, <strong>elimina el "dijo" o "respondió"</strong> para acelerar el ritmo.</p>
+          Si queda claro quién habla, elimina el "dijo" para acelerar el ritmo.</p>
           <p class="ejemplo-bien">
             —¡Suelta el arma!<br>
             —¡Oblígame!<br>
             —No lo repetiré.
           </p>
-
-          <p><strong class="etiqueta-dic">B. Diálogos Intermedios (Con acción):</strong><br>
-          Intercala acciones de los personajes para que no parezcan robots hablando.</p>
+          <p><strong class="etiqueta-dic">B. Diálogos Larguísimos (Monólogos):</strong><br>
+          Si un personaje habla durante <em>varios párrafos</em>, no uses rayas nuevas. Se usan comillas de cierre (») al inicio del nuevo párrafo del mismo hablante.</p>
           <p class="ejemplo-bien">
-            —No entiendo a qué te refieres. —Ana cruzó las piernas, fingiendo desinterés.<br>
-            —Sabes perfectamente de qué hablo —replicó él en voz baja.
-          </p>
-
-          <p><strong class="etiqueta-dic">C. Diálogos Larguísimos (Monólogos):</strong><br>
-          Si un personaje habla sin parar durante <em>varios párrafos</em>, no uses guiones nuevos en cada párrafo (eso indicaría que habla otra persona). <strong>Se usan comillas angulares de cierre (»)</strong> al inicio del nuevo párrafo del mismo hablante.</p>
-          <p class="ejemplo-bien">
-            —Escúchame bien, porque no lo repetiré. El plan era sencillo, debías entrar y salir sin hacer ruido. Pero no, tenías que romper la ventana.<br><br>
-            »Ahora toda la guardia de la ciudad nos está buscando. Hemos perdido la ventaja que teníamos.<br><br>
-            »Y lo peor de todo es que perdimos el mapa. Estamos atrapados.
+            —Escúchame bien. El plan era sencillo.<br><br>
+            »Pero tenías que romper la ventana.<br><br>
+            »Ahora todos nos buscan.
           </p>
         </div>
         
         <button class="acordeon-btn" onclick="toggleAcordeon('guiaRitmo')">🎼 5. El Ritmo de la Escritura</button>
         <div id="guiaRitmo" class="acordeon-panel">
-          <p>Tus palabras tienen música. Varía la longitud de tus oraciones para atrapar al lector:</p>
           <ul>
-            <li><strong>Para escenas de acción o miedo:</strong> Usa oraciones cortas. Suenan como latidos rápidos.<br>
-            <span class="ejemplo-bien">Corrió. La respiración le quemaba. Giró en la esquina. Un callejón sin salida. Silencio. Pasos.</span></li>
-            <li><strong>Para descripciones o momentos tranquilos:</strong> Usa oraciones largas, fluidas y compuestas.<br>
-            <span class="ejemplo-bien">El sol comenzaba a ocultarse detrás de las montañas nevadas, pintando el cielo de tonos anaranjados y violetas que se reflejaban suavemente en la superficie tranquila del lago.</span></li>
+            <li><strong>Acción o tensión:</strong> Usa oraciones cortas. Suenan como latidos rápidos.<br>
+            <span class="ejemplo-bien">Corrió. La respiración le quemaba. Un callejón sin salida. Silencio. Pasos.</span></li>
+            <li><strong>Descripciones:</strong> Usa oraciones largas y fluidas.<br>
+            <span class="ejemplo-bien">El sol comenzaba a ocultarse detrás de las montañas nevadas, pintando el cielo de tonos anaranjados.</span></li>
           </ul>
+        </div>
+
+        <!-- ================= NUEVAS SECCIONES AÑADIDAS ================= -->
+
+        <button class="acordeon-btn" onclick="toggleAcordeon('guiaPuntuacionDialogos')">✒️ 6. Puntuación exacta en Diálogos (Regla Avanzada)</button>
+        <div id="guiaPuntuacionDialogos" class="acordeon-panel">
+          <p>El uso del punto y la mayúscula en los diálogos depende de qué hace el personaje después de hablar. <strong>El texto narrativo se separa con rayas (—) pegadas a la palabra.</strong></p>
+          
+          <p><strong class="etiqueta-dic">A. Verbos de HABLA (dijo, preguntó, murmuró, exclamó):</strong><br>
+          La acotación inicia en <strong>minúscula</strong>. El punto final va <em>después</em> de la acotación.</p>
+          <p>
+            <span class="ejemplo-mal">Mal: —Tengo frío. —Dijo María.</span><br>
+            <span class="ejemplo-bien">Bien: —Tengo frío —dijo María.</span><br>
+            <span class="ejemplo-mal">Mal: —¡Vete!— gritó él.</span><br>
+            <span class="ejemplo-bien">Bien: —¡Vete! —gritó él.</span> (Se cierra admiración, pero NO va punto).
+          </p>
+
+          <p><strong class="etiqueta-dic">B. Verbos de ACCIÓN (sonrió, miró, suspiró, caminó):</strong><br>
+          El diálogo termina con su propio punto. La acotación inicia en <strong>mayúscula</strong> porque es una oración nueva.</p>
+          <p>
+            <span class="ejemplo-mal">Mal: —No iré —Se cruzó de brazos.</span><br>
+            <span class="ejemplo-bien">Bien: —No iré. —Se cruzó de brazos.</span><br>
+            <span class="ejemplo-bien">Bien: —¿Estás seguro? —Ana lo miró fijamente.</span>
+          </p>
+
+          <p><strong class="etiqueta-dic">C. Interrumpir el diálogo y continuar:</strong></p>
+          <p class="ejemplo-bien">
+            —Iré contigo —dijo Juan—, pero no me pidas piedad. (Verbo de habla = minúscula y coma después).<br><br>
+            —Iré contigo. —Sacó su espada—. Pero no me pidas piedad. (Verbo de acción = mayúscula y puntos).
+          </p>
+        </div>
+
+        <button class="acordeon-btn" onclick="toggleAcordeon('guiaSentidos')">👁️ 7. Descripciones Vivas (Los 5 Sentidos)</button>
+        <div id="guiaSentidos" class="acordeon-panel">
+          <p>Los escritores novatos solo describen lo que se ve. Los expertos describen lo que se siente, huele o escucha, logrando inmersión total.</p>
+          <ul>
+            <li><strong>Solo vista (Plano):</strong> <span class="ejemplo-mal">Entró a la taberna. Estaba oscura y llena de gente.</span></li>
+            <li><strong>Múltiples sentidos (Inmersivo):</strong> <span class="ejemplo-bien">Entró a la taberna. El olor a cerveza rancia y madera húmeda lo golpeó al instante. Apenas podía ver a través de la nube de humo de tabaco, pero el constante tintineo de jarras y risas roncas llenaba el lugar.</span></li>
+          </ul>
+        </div>
+        
+        <button class="acordeon-btn" onclick="toggleAcordeon('guiaEcos')">♻️ 8. Evitar Ecos y Pobreza Léxica</button>
+        <div id="guiaEcos" class="acordeon-panel">
+          <p>Un "eco" ocurre cuando repites la misma palabra o raíz muy cerca una de la otra en el mismo párrafo. Afea la lectura.</p>
+          <p>
+            <span class="ejemplo-mal">El <strong>caballo</strong> negro corría muy <strong>rápido</strong>. Era el <strong>caballo</strong> más <strong>rápido</strong>.</span><br>
+            <span class="ejemplo-bien">El corcel negro galopaba a toda velocidad. Era el animal más veloz de la región.</span>
+          </p>
+          <p><strong class="etiqueta-dic">Consejo:</strong> Usa sinónimos, pronombres (él, ella, lo) o simplemente omite el sujeto si ya se entiende de quién estás hablando.</p>
         </div>
 
       </div>
