@@ -201,69 +201,101 @@
     </div>
   </div>
   
-  <div id="modalAyuda" class="modal">
-    <div class="modal-contenido">
+<div id="modalAyuda" class="modal">
+    <div class="modal-contenido" style="width: 650px; max-width: 95%;">
       <div class="modal-header">
         <h3>💡 Guía Maestra para Escritores</h3>
         <button onclick="cerrarModal('modalAyuda')" style="padding: 2px 8px; color: red;">X</button>
       </div>
       
-      <button class="acordeon-btn" onclick="toggleAcordeon('guiaErrores')">🛑 1. Errores Ortográficos Comunes</button>
-      <div id="guiaErrores" class="acordeon-panel">
-        <ul>
-          <li><strong>Ay / Hay / Ahí:</strong> 
-            <br><em>Ay:</em> Exclamación. <em>Hay:</em> Del verbo haber. <em>Ahí:</em> Lugar.
-            <br><span class="ejemplo-bien">Ejemplo: ¡Ay! Ahí hay una araña gigante.</span></li>
-          <hr style="border:0.5px solid #eee;">
-          <li><strong>A ver / Haber:</strong>
-            <br><em>A ver:</em> Mirar, observar. <em>Haber:</em> Verbo auxiliar.
-            <br><span class="ejemplo-bien">Ejemplo: Vamos a ver qué hay de cenar. Debe haber algo.</span></li>
-          <hr style="border:0.5px solid #eee;">
-          <li><strong>Sino / Si no:</strong>
-            <br><em>Sino:</em> Contraste o destino. <em>Si no:</em> Condicional negativo.
-            <br><span class="ejemplo-bien">Ejemplo: No fue Pedro, sino Juan. Si no vienes, me iré solo.</span></li>
-          <hr style="border:0.5px solid #eee;">
-          <li><strong>Hecho / Echo:</strong>
-            <br><em>Hecho:</em> Del verbo hacer. <em>Echo:</em> Del verbo echar (tirar, expulsar).
-            <br><span class="ejemplo-bien">Ejemplo: Ya he hecho la tarea. Siempre echo la basura a las ocho.</span></li>
-        </ul>
-      </div>
+      <!-- Contenedor con scroll para que la ventana no se salga de la pantalla -->
+      <div style="max-height: 65vh; overflow-y: auto; padding-right: 10px;">
+        
+        <button class="acordeon-btn" onclick="toggleAcordeon('guiaErrores')">🛑 1. Errores Ortográficos Comunes</button>
+        <div id="guiaErrores" class="acordeon-panel">
+          <ul>
+            <li><strong>Ay / Hay / Ahí:</strong> 
+              <br><em>Ay:</em> Exclamación. <em>Hay:</em> Del verbo haber. <em>Ahí:</em> Lugar.
+              <br><span class="ejemplo-bien">Ejemplo: ¡Ay! Ahí hay una araña gigante.</span></li>
+            <hr style="border:0.5px solid #eee;">
+            <li><strong>Vaya / Baya / Valla:</strong>
+              <br><em>Vaya:</em> Verbo ir / Exclamación. <em>Baya:</em> Fruta. <em>Valla:</em> Cerca, obstáculo.
+              <br><span class="ejemplo-bien">Ejemplo: ¡Vaya! El caballo saltó la valla mientras comía una baya.</span></li>
+            <hr style="border:0.5px solid #eee;">
+            <li><strong>Por qué / Porque / Porqué:</strong>
+              <br><em>Por qué:</em> Pregunta. <em>Porque:</em> Respuesta. <em>Porqué:</em> El motivo (sustantivo).
+              <br><span class="ejemplo-bien">Ejemplo: ¿Por qué lloras? Porque perdí mi libro. No entiendo el porqué de tu tristeza.</span></li>
+            <hr style="border:0.5px solid #eee;">
+            <li><strong>Hecho / Echo:</strong>
+              <br><em>Hecho:</em> Del verbo hacer o suceso. <em>Echo:</em> De echar (tirar, extrañar).
+              <br><span class="ejemplo-bien">Ejemplo: Ya está hecho. Te echo de menos.</span></li>
+          </ul>
+        </div>
 
-      <button class="acordeon-btn" onclick="toggleAcordeon('guiaPuntuacion')">📝 2. Puntuación: La coma y los puntos</button>
-      <div id="guiaPuntuacion" class="acordeon-panel">
-        <p><strong class="etiqueta-dic">La "Coma Criminal":</strong> NUNCA debes separar el sujeto del predicado con una coma.</p>
-        <p><span class="ejemplo-mal">El soldado que regresó de la guerra, abrazó a su madre.</span><br>
-        <span class="ejemplo-bien">El soldado que regresó de la guerra abrazó a su madre.</span></p>
-        <p><strong class="etiqueta-dic">Puntos y signos (¿ ¡):</strong> Después de un signo de cierre (?), <strong>jamás se escribe un punto</strong>.</p>
-        <p><span class="ejemplo-mal">¿A qué hora llegas?. Te estoy esperando.</span><br>
-        <span class="ejemplo-bien">¿A qué hora llegas? Te estoy esperando.</span></p>
-      </div>
+        <button class="acordeon-btn" onclick="toggleAcordeon('guiaPuntuacion')">📝 2. Puntuación y Comas</button>
+        <div id="guiaPuntuacion" class="acordeon-panel">
+          <p><strong class="etiqueta-dic">La "Coma Criminal":</strong> NUNCA separes el sujeto del predicado con una coma.</p>
+          <p><span class="ejemplo-mal">El soldado que regresó de la guerra, abrazó a su madre.</span><br>
+          <span class="ejemplo-bien">El soldado que regresó de la guerra abrazó a su madre.</span></p>
+          <p><strong class="etiqueta-dic">Puntos y signos (¿ ¡):</strong> Después de un signo de interrogación o exclamación, <strong>jamás</strong> se escribe un punto.</p>
+          <p><span class="ejemplo-mal">¿A qué hora llegas?. Te estoy esperando.</span><br>
+          <span class="ejemplo-bien">¿A qué hora llegas? Te estoy esperando.</span></p>
+          <p><strong class="etiqueta-dic">Puntos suspensivos:</strong> Siempre son tres (...), ni más ni menos.</p>
+        </div>
 
-      <button class="acordeon-btn" onclick="toggleAcordeon('guiaNarrativa')">📖 3. Regla de Oro: Muestra, no cuentes</button>
-      <div id="guiaNarrativa" class="acordeon-panel">
-        <p>En lugar de decirle al lector cómo se siente un personaje, descríbele las reacciones físicas.</p>
-        <p><strong>Contar:</strong> <span class="ejemplo-mal">María estaba muy nerviosa y asustada.</span></p>
-        <p><strong>Mostrar:</strong> <span class="ejemplo-bien">A María le temblaban las manos y mordió la tapa de su bolígrafo.</span></p>
-      </div>
+        <button class="acordeon-btn" onclick="toggleAcordeon('guiaNarrativa')">📖 3. Regla de Oro: Muestra, no cuentes</button>
+        <div id="guiaNarrativa" class="acordeon-panel">
+          <p>En lugar de decirle al lector la emoción, descríbele las reacciones físicas y el entorno.</p>
+          <ul>
+            <li><strong>Enojo:</strong>
+              <br><em>Contar:</em> <span class="ejemplo-mal">Juan estaba muy enojado.</span>
+              <br><em>Mostrar:</em> <span class="ejemplo-bien">Juan apretó los puños hasta que sus nudillos se pusieron blancos.</span></li>
+            <li><strong>Tristeza:</strong>
+              <br><em>Contar:</em> <span class="ejemplo-mal">Ella se sintió muy triste por la noticia.</span>
+              <br><em>Mostrar:</em> <span class="ejemplo-bien">Un nudo se formó en su garganta y su vista se nubló al instante.</span></li>
+          </ul>
+        </div>
 
-      <button class="acordeon-btn" onclick="toggleAcordeon('guiaDialogos')">💬 4. Reglas de Diálogos</button>
-      <div id="guiaDialogos" class="acordeon-panel">
-        <p>En español usamos la <strong>raya (—)</strong> (Alt + 0151), no el guion corto (-).</p>
-        <ul>
-          <li><strong>Verbos de dicción (dijo, respondió):</strong> Empieza en minúscula.<br>
-          <span class="ejemplo-bien">—¡No pienso ir! —gritó Carlos enfurecido.</span></li>
-          <li><strong>Verbos de acción (sonrió, miró):</strong> Empieza en mayúscula y se separa con un punto.<br>
-          <span class="ejemplo-bien">—Te estuve esperando. —Juan se cruzó de brazos.</span></li>
-        </ul>
-      </div>
-      
-      <button class="acordeon-btn" onclick="toggleAcordeon('guiaVozActiva')">💪 5. Voz Activa vs. Voz Pasiva</button>
-      <div id="guiaVozActiva" class="acordeon-panel">
-        <p>En español literario es preferible usar la <strong>Voz Activa</strong>. Le da fuerza a tu escritura.</p>
-        <p><strong>Voz Pasiva (Débil):</strong> <span class="ejemplo-mal">La carta fue leída por el rey.</span></p>
-        <p><strong>Voz Activa (Fuerte):</strong> <span class="ejemplo-bien">El rey leyó la carta.</span></p>
-      </div>
+        <button class="acordeon-btn" onclick="toggleAcordeon('guiaDialogos')">💬 4. Diálogos y Longitud (Cortos a Largos)</button>
+        <div id="guiaDialogos" class="acordeon-panel">
+          <p>Usa la <strong>raya (—)</strong> (Alt + 0151), no el guion (-). Fíjate cómo manejar diferentes extensiones:</p>
+          
+          <p><strong class="etiqueta-dic">A. Diálogos Cortos (Dinámicos y de Acción):</strong><br>
+          Úsalos en discusiones, peleas o tensión. Si queda claro quién habla, <strong>elimina el "dijo" o "respondió"</strong> para acelerar el ritmo.</p>
+          <p class="ejemplo-bien">
+            —¡Suelta el arma!<br>
+            —¡Oblígame!<br>
+            —No lo repetiré.
+          </p>
 
+          <p><strong class="etiqueta-dic">B. Diálogos Intermedios (Con acción):</strong><br>
+          Intercala acciones de los personajes para que no parezcan robots hablando.</p>
+          <p class="ejemplo-bien">
+            —No entiendo a qué te refieres. —Ana cruzó las piernas, fingiendo desinterés.<br>
+            —Sabes perfectamente de qué hablo —replicó él en voz baja.
+          </p>
+
+          <p><strong class="etiqueta-dic">C. Diálogos Larguísimos (Monólogos):</strong><br>
+          Si un personaje habla sin parar durante <em>varios párrafos</em>, no uses guiones nuevos en cada párrafo (eso indicaría que habla otra persona). <strong>Se usan comillas angulares de cierre (»)</strong> al inicio del nuevo párrafo del mismo hablante.</p>
+          <p class="ejemplo-bien">
+            —Escúchame bien, porque no lo repetiré. El plan era sencillo, debías entrar y salir sin hacer ruido. Pero no, tenías que romper la ventana.<br><br>
+            »Ahora toda la guardia de la ciudad nos está buscando. Hemos perdido la ventaja que teníamos.<br><br>
+            »Y lo peor de todo es que perdimos el mapa. Estamos atrapados.
+          </p>
+        </div>
+        
+        <button class="acordeon-btn" onclick="toggleAcordeon('guiaRitmo')">🎼 5. El Ritmo de la Escritura</button>
+        <div id="guiaRitmo" class="acordeon-panel">
+          <p>Tus palabras tienen música. Varía la longitud de tus oraciones para atrapar al lector:</p>
+          <ul>
+            <li><strong>Para escenas de acción o miedo:</strong> Usa oraciones cortas. Suenan como latidos rápidos.<br>
+            <span class="ejemplo-bien">Corrió. La respiración le quemaba. Giró en la esquina. Un callejón sin salida. Silencio. Pasos.</span></li>
+            <li><strong>Para descripciones o momentos tranquilos:</strong> Usa oraciones largas, fluidas y compuestas.<br>
+            <span class="ejemplo-bien">El sol comenzaba a ocultarse detrás de las montañas nevadas, pintando el cielo de tonos anaranjados y violetas que se reflejaban suavemente en la superficie tranquila del lago.</span></li>
+          </ul>
+        </div>
+
+      </div>
     </div>
   </div>
 
